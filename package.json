@@ -1,0 +1,24 @@
+{
+  "name": "hope",
+  "version": "1.0.0",
+  "description": "A Business Toolkit",
+  "main": "Hope.js",
+  "scripts": {
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ElhamAryanpur/Hope.git"
+  },
+  "keywords": [
+    "Business",
+    "Hope"
+  ],
+  "author": "Elham Aryanpur",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ElhamAryanpur/Hope/issues"
+  },
+  "homepage": "https://github.com/ElhamAryanpur/Hope#readme",
+  "dependencies": {
+  }
+}
