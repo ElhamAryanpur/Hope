@@ -1,0 +1,23 @@
+.hope-container{
+    border: 1px solid #6AAAC9;
+    padding: 10px;
+    padding-bottom: 15px;
+}
+
+.hope-input{
+    border: none;
+    background: #1d3042;
+    color: #6AAAC9;
+    font-weight: bold;
+    padding: 5px;
+    margin: 5px;
+}
+
+.hope-button{
+    border: none;
+    background: #1d3042;
+    color: #6AAAC9;
+    font-weight: bold;
+    font-size: 15px;
+    margin: 5px;
+}
