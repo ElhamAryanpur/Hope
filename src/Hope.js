@@ -1,10 +1,8 @@
-var downloadedData;
-
-function loadDep(url="") {
+function loadDep(url="", callback=()=>{}) {
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
-       downloadedData = this.responseText;
+       callback(this.responseText);
       }
     };
     xhttp.open("GET", url, true);
@@ -20,9 +18,15 @@ class Hope{
 
         const deps = [
             "https://code.jquery.com/jquery-3.4.1.min.js"
-        ]; for (var i=0; i<deps.length; i++){loadDep(deps[i]); eval(downloadedData)}
+        ]; for (var i=0; i<deps.length; i++){loadDep(deps[i]); (data)=>{
+            eval(data);}}
         
-        loadDep("")
+        loadDep("https://raw.githubusercontent.com/ElhamAryanpur/Hope/master/src/Hope.css", (response)=>{
+            const style = document.createElement("style");
+            style.innerHTML = response;
+            document.head.appendChild(style);
+        });
+        
     }
 
     run(){
