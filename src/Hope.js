@@ -1,4 +1,32 @@
-class Hope{
+/**
+ * TODO:
+ * 
+ * 1. Make Compression of data
+ */
+
+const pako = require("pako");
+
+global.DB = class{
+    constructor(name="data"){
+        this.name = name;
+        this.data = this.loadData();
+
+        if (this.data == null){this.data={};}
+    }
+
+    saveData(name=this.name, data=this.data){
+        const stringify = JSON.stringify(data);
+        const CompressData = pako.deflate(stringify, { to: 'string' });
+        localStorage.setItem(name, CompressData);
+    }
+    loadData(name=this.name){
+        const getData = localStorage.getItem(name);
+        const decompress = pako.inflate(getData, { to: 'string' });
+        return JSON.parse(decompress);
+    }
+}
+
+global.Hope = class{
     constructor(settings={}){
         this.settings = settings;
         this.canvas = document.getElementById(settings.name);
@@ -6,21 +34,15 @@ class Hope{
         this.elements = {};
 
         const deps = [
-            "https://raw.githubusercontent.com/tantaman/LargeLocalStorage/master/dist/LargeLocalStorage.min.js"
-        ]; for (var i=0; i<deps.length; i++){this.loadDep(deps[i]); (data)=>{
+            ""
+        ]; for (var i=0; i<deps.length; i++){this._loadDep(deps[i]); (data)=>{
             eval(data);}}
         
-        this.loadDep("https://raw.githubusercontent.com/ElhamAryanpur/Hope/master/src/Hope.css",
+        this._loadDep("https://raw.githubusercontent.com/ElhamAryanpur/Hope/master/src/Hope.css",
         (response)=>{
             const style = document.createElement("style");
             style.innerHTML = response;
             document.head.appendChild(style);
-        });
-
-        const cap = 50 * 1024 * 1024;
-        var storage = new LargeLocalStorage({
-            size: cap,
-            name: "test"
         });
 
     }
@@ -29,6 +51,7 @@ class Hope{
         if (settings.table != undefined){
             var tableDiv = document.createElement("div");
             var table = settings.table.data;
+            var tableDB = new DB(name="table");
             this.elements.table = [];
 
             for (var i=0; i<table.length; i++){
@@ -52,7 +75,10 @@ class Hope{
                     data[this.elements.table[i].id] = this.elements.table[i].value;
                 } callback(data);
 
-                
+                tableDB.data = data;
+                tableDB.saveData();
+                /** TODO - Compress And Save To Local Storage */
+
             }
 
             submitButton.addEventListener("click", ()=>{
@@ -65,7 +91,7 @@ class Hope{
         }
     }
 /************************************************************************************************/
-    loadDep(url="", callback=()=>{}) {
+    _loadDep(url="", callback=()=>{}) {
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
@@ -75,6 +101,4 @@ class Hope{
         xhttp.open("GET", url, true);
         xhttp.send();
     }
-
-    
 }

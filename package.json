@@ -4,6 +4,8 @@
   "description": "A Business Toolkit",
   "main": "Hope.js",
   "scripts": {
+    "build": "browserify ./src/Hope.js -o ./dist/Hope.js",
+    "watch": "watchify ./src/Hope.js -o ./dist/Hope.js"
   },
   "repository": {
     "type": "git",
@@ -20,5 +22,8 @@
   },
   "homepage": "https://github.com/ElhamAryanpur/Hope#readme",
   "dependencies": {
+    "browserify": "^16.5.0",
+    "pako": "^1.0.10",
+    "watchify": "^3.11.1"
   }
 }
