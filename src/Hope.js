@@ -1,7 +1,6 @@
 /**
  * TODO:
  * 
- * 1. Make Compression of data
  */
 
 const pako = require("pako");
@@ -31,7 +30,7 @@ global.Hope = class{
         this.settings = settings;
         this.canvas = document.getElementById(settings.name);
         this.canvas.setAttribute("class", "hope-container");
-        this.elements = {};
+        this.elements = {}; this.DB = DB;
 
         const deps = [
             ""
@@ -44,14 +43,13 @@ global.Hope = class{
             style.innerHTML = response;
             document.head.appendChild(style);
         });
-
     }
 
     init(settings={}){
         if (settings.table != undefined){
             var tableDiv = document.createElement("div");
             var table = settings.table.data;
-            var tableDB = new DB(name="table");
+            var tableDB = new this.DB(name="table");
             this.elements.table = [];
 
             for (var i=0; i<table.length; i++){
@@ -86,6 +84,7 @@ global.Hope = class{
 
             tableDiv.appendChild(document.createElement("br"));
             tableDiv.appendChild(submitButton);
+
             this.canvas.appendChild(tableDiv);
         }
     }
