@@ -4,7 +4,7 @@
   "description": "A Business Toolkit",
   "main": "Hope.js",
   "scripts": {
-    "build": "browserify ./src/Hope.js -o ./dist/Hope.js -p tinyify",
+    "build": "browserify ./src/Hope.js -o ./dist/Hope.js",
     "watch": "watchify ./src/Hope.js -o ./dist/Hope.js",
     "test": "npm run build"
   },
@@ -25,7 +25,6 @@
   "dependencies": {
     "browserify": "^16.5.0",
     "pako": "^1.0.10",
-    "tinyify": "^2.5.2",
     "watchify": "^3.11.1"
   },
   "devDependencies": {}
