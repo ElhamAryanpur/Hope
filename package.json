@@ -27,7 +27,5 @@
     "pako": "^1.0.10",
     "watchify": "^3.11.1"
   },
-  "devDependencies": {
-    "jest": "^24.9.0"
-  }
+  "devDependencies": {}
 }
