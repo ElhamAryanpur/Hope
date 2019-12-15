@@ -5,7 +5,7 @@ class DB{
         this.name = name;
         this.data = this.loadData();
 
-        if (this.data == null){this.data={};}
+        if (this.data == null){this.data=[];}
     }
 
     saveData(name=this.name, data=this.data){
@@ -14,9 +14,13 @@ class DB{
         localStorage.setItem(name, CompressData);
     }
     loadData(name=this.name){
-        const getData = localStorage.getItem(name);
-        const decompress = pako.inflate(getData, { to: 'string' });
-        return JSON.parse(decompress);
+        try{
+            const getData = localStorage.getItem(name);
+            const decompress = pako.inflate(getData, { to: 'string' });
+            return JSON.parse(decompress);
+        } catch(error){
+            return null;
+        }
     }
 }
 

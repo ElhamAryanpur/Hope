@@ -4,7 +4,6 @@ function init(settings={}){
         this.tableCanvas.setAttribute("class", "hope-container");
         var tableDiv = document.createElement("div");
         var table = settings.table.data;
-        var tableDB = new this.DB(name="table");
         this.elements.table = [];
 
         for (var i=0; i<table.length; i++){
@@ -28,7 +27,8 @@ function init(settings={}){
                 data[this.elements.table[i].id] = this.elements.table[i].value;
             } callback(data);
 
-            tableDB.data = data;
+            var tableDB = new this.DB(name="table");
+            tableDB.data.push(data);
             tableDB.saveData();
 
         }

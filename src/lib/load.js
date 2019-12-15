@@ -9,10 +9,22 @@ function load(settings={}){
 
         if (!tableSettings.load){
             data = tableSettings.data;
-        } else { data = db.loadData() }
+        } else { data = db.data }
 
-        // TODO: Make A Table From Data And Add It To The Div
-
+        const tableDiv = document.createElement("table");
+        tableDiv.setAttribute("class", "hope-table");
+        for(i in data){
+            const row = document.createElement("tr");
+            row.setAttribute("class", "hope-table");            
+            for (o in data[i]){
+                var column = document.createElement("th");
+                column.innerHTML = data[i][o];
+                column.setAttribute("class", "hope-table")
+                row.appendChild(column);
+            }
+            tableDiv.appendChild(row);
+        }
+        div.appendChild(tableDiv);
     }
 }
 
