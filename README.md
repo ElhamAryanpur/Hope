@@ -1,5 +1,3 @@
-# Hope
-
 ![](Hope-logo/cover.png)
 
 ## Status
