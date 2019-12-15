@@ -3,7 +3,7 @@
  * 1. Load the saved data
  */
 
-const init = require("./lib/init");
+const init = require("./lib/init_new");
 const load = require("./lib/load");
 const DB = require("./lib/db");
 

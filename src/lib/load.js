@@ -25,13 +25,19 @@ function load(settings={}){
             rowFirst.appendChild(tableHeader);
         } tableDiv.appendChild(rowFirst);
 
+        console.log(data)
+
         for(i in data){
             const row = document.createElement("tr");
             row.setAttribute("class", "hope-table");          
             for (o in data[i]){
                 var column = document.createElement("th");
-                column.innerHTML = data[i][o];
-                column.setAttribute("class", "hope-table")
+                column.setAttribute("class", "hope-table");
+                const edit = document.createElement("input");
+                edit.id = `${i}-${o}`;
+                edit.value = data[i][o];
+                edit.setAttribute("class", "hope-input");
+                column.appendChild(edit);
                 row.appendChild(column);
             }
             tableDiv.appendChild(row);
