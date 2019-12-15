@@ -6,6 +6,9 @@ function init(settings={}){
         var table = settings.table.data;
         this.elements.table = [];
 
+        var settingsSave = new this.DB(name="table-settings");
+        settingsSave.saveData(name=settings.name, data=table);
+
         for (var i=0; i<table.length; i++){
             var field = document.createElement("input");
             field.placeholder = " " + table[i].name;
