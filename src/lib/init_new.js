@@ -8,7 +8,13 @@ function init(settings={}){
         const table = document.createElement("table");
         table.setAttribute("class", "hope-table");
 
-        makeRow({div: DIV});
+        var test = makeRow({
+            div: DIV,
+            data: tableSettings.data,
+            fill: false
+        });
+
+        DIV.appendChild(test);
 
     }
 }
@@ -28,11 +34,24 @@ function initOfInit(settings){
 }
 
 function makeRow(settings){
-for (var i=0; i<5; i++){
+    const elements = document.createElement("div");
 
-    
+    for (var i=0; i<settings.data.length; i++){
 
-}
+        const input = document.createElement("input");
+        input.setAttribute("class", "hope-input");
+        input.setAttribute("type", settings.data[i].type);
+
+        if (settings.fill == true){
+            input.value = settings.data[i].name
+        } else {
+            input.placeholder = settings.data[i].name
+        }
+
+        elements.appendChild(input);
+    }
+
+    return elements;
 }
 
 module.exports = init;
