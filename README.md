@@ -4,13 +4,13 @@
 
 ### Requirements
 
-. `Git`
+. [`Git`](https://git-scm.com/downloads)
 
-. `Rust` Compiler
+. [`Rust`](https://www.rust-lang.org/tools/install)
 
-. `wasm-pack` cargo
+. [`wasm-pack`](https://rustwasm.github.io/wasm-pack/installer/)
 
-. `NPM`
+. [`NPM`](https://www.npmjs.com/get-npm)
 
 ### Clone this repo
 
