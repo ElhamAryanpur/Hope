@@ -26,8 +26,3 @@ pub fn create_dom(text: &str){
     body.append_child(&title)
         .expect("Could not append title to body");
 }
-
-#[wasm_bindgen]
-pub fn test(list: bool){
-    print!("AAAAAAA");
-}
