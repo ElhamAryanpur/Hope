@@ -17,7 +17,7 @@
 ### Clone this repo
 
 ```bash
-git clone https://github.com/ElhamAryanpur/unique-engine/tree/wasm
+git clone https://github.com/ElhamAryanpur/Hope/tree/wasm
 ```
 
 ### Build
