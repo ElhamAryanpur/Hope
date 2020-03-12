@@ -3,11 +3,6 @@
   "version": "1.0.0",
   "description": "A Business Toolkit",
   "main": "Hope.js",
-  "scripts": {
-    "build": "browserify ./src/Hope.js -o ./dist/Hope.js",
-    "watch": "watchify ./src/Hope.js -o ./dist/Hope.js",
-    "test": "npm run build"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ElhamAryanpur/Hope.git"
@@ -22,10 +17,25 @@
     "url": "https://github.com/ElhamAryanpur/Hope/issues"
   },
   "homepage": "https://github.com/ElhamAryanpur/Hope#readme",
-  "dependencies": {
-    "browserify": "^16.5.0",
-    "pako": "^1.0.10",
-    "watchify": "^3.11.1"
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "start": "sirv public",
+    "server": "node Server.js"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^11.0.0",
+    "@rollup/plugin-node-resolve": "^7.0.0",
+    "rollup": "^1.20.0",
+    "rollup-plugin-livereload": "^1.0.0",
+    "rollup-plugin-svelte": "^5.0.3",
+    "rollup-plugin-terser": "^5.1.2",
+    "svelte": "^3.0.0"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "sirv-cli": "^0.4.4",
+    "socket.io": "^2.3.0",
+    "sqlite3": "^4.1.1"
+  }
 }
