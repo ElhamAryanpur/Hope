@@ -2,7 +2,8 @@
 
 ## Status
 
-[![Build Status](https://travis-ci.org/ElhamAryanpur/Hope.svg?branch=master)](https://travis-ci.org/ElhamAryanpur/Hope)
+![](https://github.com/ElhamAryanpur/hope/workflows/CI/badge.svg)
+
 
 ## About
 
