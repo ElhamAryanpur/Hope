@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/ElhamAryanpur/Hope#readme",
   "scripts": {
+    "init": "npm install && npm run build",
     "build": "rollup -c",
     "dev": "rollup -c -w",
     "start": "sirv public",
