@@ -22,7 +22,8 @@
     "build": "rollup -c",
     "dev": "rollup -c -w",
     "start": "sirv public",
-    "server": "node Server.js"
+    "server": "node Server.js",
+    "code": "bash code.sh"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^11.0.0",

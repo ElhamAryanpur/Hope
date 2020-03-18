@@ -1,12 +1,17 @@
 <script>
   export let socket
 
-  import Dashboard from './pages/Dashboard.svelte'
+  import Menu from './pages/Menu.svelte'
+  import Dash from './pages/Dash.svelte'
+  import Table from './pages/Table.svelte'
 
-  let choosen
+  let choosen = window.choosen;
+  if (choosen == null){ choosen = 'table' }
+
+  window.updateChoosen = function(){ choosen = window.choosen }
 
   let height = window.innerHeight - 10
-  let width;
+  let width
   window.addEventListener('resize', () => {
     height = window.innerHeight - 10
   });
@@ -35,12 +40,18 @@
     <td style="width: {width}px">
       <div id="menu" style="height: {height}px; width: {width}px">
         <table bind:clientWidth={width}>
-          <Dashboard />
+          <Menu />
         </table>
       </div>
     </td>
     <td>
-      <div id="main"></div>
+      <div id="main">
+          {#if choosen === 'dash'}
+            <Dash socket=socket/>
+          {:else if choosen === 'table'}
+             <Table socket=socket/>
+          {/if}
+      </div>
     </td>
   </tr>
 </table>
