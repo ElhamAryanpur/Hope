@@ -15,12 +15,14 @@
 
 
 
-    import { onMount } from 'svelte'
+    import { onMount } from 'svelte';
 
     onMount(() => {
-        if (button == false){ jQuery("#" + id).dialog(); }
+        if (button == false){ jQuery("#" + id).dialog({ width:'auto' }); }
         else { jQuery("#" + id).dialog({
-            autoOpen: false
+            autoOpen: false,
+            width:'auto',
+            maxHeight: window.HEIGHT - 100
         }); }
     });
 </script>

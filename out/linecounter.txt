@@ -1,0 +1,62 @@
+===============================================================================
+EXTENSION NAME : linecounter
+EXTENSION VERSION : 0.2.7
+-------------------------------------------------------------------------------
+count time : 2020-03-19 01:05:28
+count workspace : /home/elhamaryanpur/Desktop/Desktop/Hope
+total files : 34
+total code lines : 6163
+total comment lines : 62
+total blank lines : 377
+
+    statistics
+   |      extension|     total code|  total comment|    total blank|percent|
+   -------------------------------------------------------------------------
+   |               |             22|              0|              4|   0.36|
+   |            .js|           1975|             58|            282|     32|
+   |            .sh|              2|              0|              0|  0.032|
+   |            .md|              5|              1|              5|  0.081|
+   |          .json|           3742|              0|              1|     61|
+   |        .svelte|            240|              0|             48|    3.9|
+   |          .html|             18|              0|              5|   0.29|
+   |           .css|            115|              1|             23|    1.9|
+   |           .txt|              7|              2|              3|   0.11|
+   |           .yml|             11|              0|              4|   0.18|
+   |           .map|             23|              0|              2|   0.37|
+   |           .svg|              3|              0|              0|  0.049|
+   -------------------------------------------------------------------------
+.github/workflows/main.yml, code is 11, comment is 0, blank is 4.
+.gitignore, code is 5, comment is 0, blank is 0.
+code.sh, code is 2, comment is 0, blank is 0.
+Hope-logo/cover.png, it is a binary file.
+Hope-logo/info.txt, code is 7, comment is 2, blank is 3.
+Hope-logo/profile.png, it is a binary file.
+Hope-logo/vector/default-monochrome-black.svg, code is 1, comment is 0, blank is 0.
+Hope-logo/vector/default-monochrome-white.svg, code is 1, comment is 0, blank is 0.
+Hope-logo/vector/default-monochrome.svg, code is 1, comment is 0, blank is 0.
+lib/db.js, code is 63, comment is 1, blank is 15.
+lib/main.js, code is 6, comment is 0, blank is 3.
+LICENSE, code is 17, comment is 0, blank is 4.
+package-lock.json, code is 3700, comment is 0, blank is 0.
+package.json, code is 42, comment is 0, blank is 1.
+public/build/bundle.css, code is 7, comment is 1, blank is 1.
+public/build/bundle.css.map, code is 22, comment is 0, blank is 2.
+public/build/bundle.js, code is 1825, comment is 39, blank is 246.
+public/build/bundle.js.map, code is 1, comment is 0, blank is 0.
+public/favicon.png, it is a binary file.
+public/global.css, code is 108, comment is 0, blank is 22.
+public/index.html, code is 18, comment is 0, blank is 5.
+README.md, code is 5, comment is 1, blank is 5.
+rollup.config.js, code is 48, comment is 14, blank is 9.
+Server.js, code is 24, comment is 4, blank is 7.
+src/App.svelte, code is 51, comment is 0, blank is 8.
+src/components/box.svelte, code is 14, comment is 0, blank is 3.
+src/components/dialog.svelte, code is 39, comment is 0, blank is 11.
+src/main.js, code is 9, comment is 0, blank is 2.
+src/pages/Dash.svelte, code is 11, comment is 0, blank is 3.
+src/pages/Menu.svelte, code is 26, comment is 0, blank is 3.
+src/pages/Table.svelte, code is 28, comment is 0, blank is 6.
+src/pages/TableNew.svelte, code is 54, comment is 0, blank is 8.
+src/stdl/setting.svelte, code is 13, comment is 0, blank is 3.
+src/table/table.svelte, code is 4, comment is 0, blank is 3.
+===============================================================================

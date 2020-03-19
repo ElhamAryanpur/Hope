@@ -10,10 +10,10 @@
 
   window.updateChoosen = function(){ choosen = window.choosen }
 
-  let height = window.innerHeight - 10
+  window.HEIGHT = window.innerHeight - 10
   let width
   window.addEventListener('resize', () => {
-    height = window.innerHeight - 10
+    window.HEIGHT = window.innerHeight - 10
   });
 </script>
 
@@ -32,20 +32,22 @@
     margin-right: 30px;
     padding-top: 30px;
     padding-bottom: 30px;
+    overflow-y: scroll;
   }
+
 </style>
 
 <table style="width: 100%">
   <tr>
     <td style="width: {width}px">
-      <div id="menu" style="height: {height}px; width: {width}px">
+      <div id="menu" style="height: {window.HEIGHT}px; width: {width}px">
         <table bind:clientWidth={width}>
           <Menu />
         </table>
       </div>
     </td>
     <td>
-      <div id="main">
+      <div id="main" style="max-height: {window.HEIGHT - 100}px;">
           {#if choosen === 'dash'}
             <Dash socket=socket/>
           {:else if choosen === 'table'}

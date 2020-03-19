@@ -1,30 +1,34 @@
 <script>
 export let socket;
 import Dialog from '../components/dialog.svelte';
+import Box from '../components/box.svelte';
+import TableNew from './TableNew.svelte';
 
-let TABLE_NAMES = ["test"];
+let TABLE_NAMES = ["test", "aaa"];
 
 </script>
 
 <style>
-  table {
-    margin: 0 auto;
-  }
-
-  span{
+  button{
     font-weight: bold;
     margin-right: 10px;
+    border: 1px solid #6AAAC9;
+    border-radius: 0px;
+    font-size: 20px;
+    height: 100px;
+    width: 100px;
+    background: #1a2835;
+    
   }
 </style>
 
-<table>
-    <tr>
-        <span>Table: </span>
-        <select>
-            {#each TABLE_NAMES as name}
-                <option value="{name}">{name}</option>
-            {/each}
-        </select>
-        <Dialog button="New Table" style="padding: 10px;">AAA</Dialog>
-    </tr>
-</table>
+
+<Dialog
+  button="New Table"
+  style="padding: 7px; border-radius: 0px; height: 100px; width: 100px; margin-left: 0px;"
+  title="Create A New Table">
+  <TableNew socket=socket />
+</Dialog>
+{#each TABLE_NAMES as name}
+  <button class="box">{name}</button>
+{/each}
