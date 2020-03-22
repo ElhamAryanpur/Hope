@@ -1,4 +1,7 @@
 <script>
+
+const TableDB = new DB("tableDB");
+
 let numberOfFields = 2;
 
 $: fieldList = ((NOF)=>{
@@ -10,13 +13,23 @@ $: fieldList = ((NOF)=>{
 })(numberOfFields);
 
 function createTable(){
-    const data = JSON.stringify({
+    const data = {
         name: tableName,
         values: fieldValues,
         types: fieldTypes
-    });
-
-    window.socket.emit('create table', data);
+    };
+    TableDB.get("tableNames", (doc)=>{
+        if (doc.status == 404){
+            TableDB.try_put("tableNames", {names: [data.name]});
+            TableDB.try_put(data.name, data);
+        } else {
+            const d = doc;
+            d.names.push(data.name)
+            TableDB.try_put("tableNames", d);
+            TableDB.try_put(data.name, data);
+        }
+    })
+    
     jQuery(`#dialog`).dialog('close');
 }
 
