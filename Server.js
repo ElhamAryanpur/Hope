@@ -1,11 +1,15 @@
+const PouchDB = require('pouchdb')
 const app = require('express')()
 const http = require('http').createServer(app)
 const io = require('socket.io')(http)
 const m = require('./lib/main')
-const Main = new m()
 
 //========================================================================//
 //========================================================================//
+
+app.use('/db', require('express-pouchdb')(PouchDB, {
+  configPath: './db/config.json'
+}));
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/public/index.html')
@@ -27,7 +31,7 @@ app.get('/build/:name', (req, res) => {
 //========================================================================//
 
 io.on('connection', function(socket) {
-  console.log('a user connected')
+  const Main = new m(socket)
 })
 
 http.listen(3000, function() {

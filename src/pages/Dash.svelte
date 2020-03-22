@@ -1,5 +1,4 @@
 <script>
-  export let socket;
   import Dialog from '../components/dialog.svelte';
 </script>
 

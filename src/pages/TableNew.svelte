@@ -1,6 +1,4 @@
 <script>
-export let socket;
-
 let numberOfFields = 2;
 
 $: fieldList = ((NOF)=>{
@@ -11,7 +9,20 @@ $: fieldList = ((NOF)=>{
     return l;
 })(numberOfFields);
 
+function createTable(){
+    const data = JSON.stringify({
+        name: tableName,
+        values: fieldValues,
+        types: fieldTypes
+    });
+
+    window.socket.emit('create table', data);
+    jQuery(`#dialog`).dialog('close');
+}
+
+let fieldValues = [];
 let fieldTypes = [];
+let tableName = "";
 </script>
 
 <style>
@@ -44,7 +55,7 @@ let fieldTypes = [];
     </tr>
     {#each fieldList as i, n}
         <tr class="style">
-            <td class="style"><input type="text" value="Field {n + 1}" placeholder="Name"></td>
+            <td class="style"><input bind:value={fieldValues[`${n}`]} type="text" placeholder="Field {n + 1}"></td>
 
             <td class="style">
                 <select bind:value={fieldTypes[`${n}`]}>
@@ -56,7 +67,7 @@ let fieldTypes = [];
     {/each}
     <br> <br> <br>
     <tr>
-        <td> <input type="text" placeholder="Table Name" value="My Table"></td>
-        <td><button>Create Table</button></td>
+        <td> <input bind:value={tableName} type="text" placeholder="Table Name"></td>
+        <td><button on:click={()=> createTable()}>Create Table</button></td>
     </tr>
 </table>

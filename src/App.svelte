@@ -1,6 +1,4 @@
 <script>
-  export let socket
-
   import Menu from './pages/Menu.svelte'
   import Dash from './pages/Dash.svelte'
   import Table from './pages/Table.svelte'
@@ -49,9 +47,9 @@
     <td>
       <div id="main" style="max-height: {window.HEIGHT - 100}px;">
           {#if choosen === 'dash'}
-            <Dash socket=socket/>
+            <Dash/>
           {:else if choosen === 'table'}
-             <Table socket=socket/>
+             <Table/>
           {/if}
       </div>
     </td>

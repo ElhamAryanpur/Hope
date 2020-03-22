@@ -1,5 +1,4 @@
 <script>
-export let socket;
 import Dialog from '../components/dialog.svelte';
 import Box from '../components/box.svelte';
 import TableNew from './TableNew.svelte';
@@ -27,7 +26,7 @@ let TABLE_NAMES = ["test", "aaa"];
   button="New Table"
   style="padding: 7px; border-radius: 0px; height: 100px; width: 100px; margin-left: 0px;"
   title="Create A New Table">
-  <TableNew socket=socket />
+  <TableNew/>
 </Dialog>
 {#each TABLE_NAMES as name}
   <button class="box">{name}</button>
