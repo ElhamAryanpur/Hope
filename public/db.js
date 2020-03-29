@@ -4,8 +4,13 @@ class DB {
   }
 
   get(name = '', callback) {
-      this.db.get(name).then(doc => {
+    this.db
+      .get(name)
+      .then(doc => {
         callback(doc)
+      })
+      .catch(err => {
+        callback(err)
       })
   }
 
@@ -45,11 +50,13 @@ class DB {
     })
   }
 
-  change(callback){
-      this.db.changes({
-          since: 'now',
-          live: true,
-          include_docs: true
-      }).on('change', callback)
+  change(callback) {
+    this.db
+      .changes({
+        since: 'now',
+        live: true,
+        include_docs: true,
+      })
+      .on('change', callback)
   }
 }

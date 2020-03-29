@@ -5,20 +5,26 @@
 
   let TABLE_NAMES = []
 
-  const TableDB = new DB('tableDB')
-  TableDB.get('tableNames', data => {
+  window.TableDB = new DB('tableDB')
+  window.TableDB.get('tableNames', data => {
     if (data.names != undefined) {
       TABLE_NAMES = data.names
     }
   })
 
-  TableDB.change(() => {
-    TableDB.get('tableNames', data => {
+  window.TableDB.change(() => {
+    window.TableDB.get('tableNames', data => {
       if (data.names != undefined) {
         TABLE_NAMES = data.names
       }
     })
   });
+
+  function changeTable(choosen=''){
+    window.changePage('tableview');
+    window.choosenTable = choosen;
+  }
+  changeTable('main');
 </script>
 
 <style>
@@ -42,5 +48,5 @@
   <TableNew />
 </Dialog>
 {#each TABLE_NAMES as name}
-  <button class="box">{name}</button>
+  <button class="box" on:click={()=> changeTable(name)}>{name}</button>
 {/each}

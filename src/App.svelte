@@ -2,9 +2,11 @@
   import Menu from './pages/Menu.svelte'
   import Dash from './pages/Dash.svelte'
   import Table from './pages/Table.svelte'
+  import TableView from './pages/TableView.svelte'
 
   let choosen = window.choosen;
   if (choosen == null){ choosen = 'table' }
+  
 
   window.updateChoosen = function(){ choosen = window.choosen }
 
@@ -50,6 +52,8 @@
             <Dash/>
           {:else if choosen === 'table'}
              <Table/>
+          {:else if choosen === 'tableview'}
+             <TableView/>
           {/if}
       </div>
     </td>

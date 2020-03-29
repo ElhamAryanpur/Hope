@@ -1,7 +1,7 @@
 <script>
   import Box from '../components/box.svelte'
 
-  function change(to = 'account') {
+  window.changePage = function(to = 'account') {
     window.choosen = to
     window.updateChoosen()
   }
@@ -16,14 +16,14 @@
 <tr>
   <td>
     <Box>
-      <div on:click={() => change('dash')}>Dashboard</div>
+      <div on:click={() => window.changePage('dash')}>Dashboard</div>
     </Box>
   </td>
 </tr>
 <tr>
   <td>
     <Box>
-      <div on:click={() => change('table')}>Table</div>
+      <div on:click={() => window.changePage('table')}>Table</div>
     </Box>
   </td>
 </tr>
