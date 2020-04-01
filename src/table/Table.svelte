@@ -24,7 +24,7 @@
     window.changePage('tableview');
     window.choosenTable = choosen;
   }
-  changeTable('main');
+
 </script>
 
 <style>
@@ -41,6 +41,7 @@
 </style>
 
 <Dialog
+  id="new-table"
   button="New Table"
   style="padding: 7px; border-radius: 0px; height: 100px; width: 100px;
   margin-left: 0px;"

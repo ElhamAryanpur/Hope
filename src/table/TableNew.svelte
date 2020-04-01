@@ -26,8 +26,8 @@ function createTable(){
             window.TableDB.put(data.name, data);
         }
     })
-    
-    jQuery(`#dialog`).dialog('close');
+
+    jQuery(`#new-table`).dialog('close');
 }
 
 let fieldValues = [];

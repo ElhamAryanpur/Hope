@@ -2,7 +2,6 @@
 import Dialog from "../components/dialog.svelte";
 
 let basicData = {columnNames: []}
-
 window.TableDB.get_clean(window.choosenTable, (doc)=>{
     basicData.columnNames = doc.values
     basicData.types = doc.types
@@ -10,13 +9,19 @@ window.TableDB.get_clean(window.choosenTable, (doc)=>{
 });
 
 const CurrentTable = new DB(`table-${window.choosenTable}`);
-CurrentTable.get('settings', (doc)=>{
-    console.log(doc)
-});
 
 let data = [['N/A']];
 let colspan;
 let newData = [];
+
+function submitData(){
+    console.log(newData)
+}
+
+function changeType(inpt){
+    const i = parseInt(inpt.id)
+    inpt.setAttribute("type", basicData.types[i])
+}
 </script>
 
 <style>
@@ -38,21 +43,26 @@ let newData = [];
         <td>
             <Dialog
                 title="Filter The Table Data"
-                button="Filter" id="filter">
+                button="Filter" id="{window.choosenTable}-filter">
             </Dialog>
         </td>
 
         <td>
             <Dialog
                 title="Add New Query To The Table"
-                button="New" id="new">
+                button="New" id="{window.choosenTable}-new">
             
                 {#each basicData.columnNames as name, n}
-                    <input type="text" placeholder="{name}" bind:value={newData[`${n}`]}><br>
+                    <input 
+                        id="{n}" 
+                        placeholder="{name}" 
+                        bind:value={newData[`${n}`]}
+                        use:changeType
+                    ><br>
                 {/each}
 
                 <br><br><br>
-                <button>Submit</button>
+                <button on:click={()=> submitData()}>Submit</button>
 
             </Dialog>
         </td>

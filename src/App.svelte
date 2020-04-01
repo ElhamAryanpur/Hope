@@ -1,8 +1,8 @@
 <script>
   import Menu from './pages/Menu.svelte'
   import Dash from './pages/Dash.svelte'
-  import Table from './pages/Table.svelte'
-  import TableView from './pages/TableView.svelte'
+  import Table from './table/Table.svelte'
+  import TableView from './table/TableView.svelte'
 
   let choosen = window.choosen;
   if (choosen == null){ choosen = 'table' }
