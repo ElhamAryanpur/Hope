@@ -1,6 +1,4 @@
 <style>
-  
-
   div {
     background: #1a2835;
     border-radius: 10px;

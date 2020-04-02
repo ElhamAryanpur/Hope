@@ -1,6 +1,11 @@
 <script>
 import Dialog from "../components/dialog.svelte";
 
+let DATA = [['N/A']];
+let colspan;
+let newData = [];
+let LOADED = false;
+
 let basicData = {columnNames: []}
 window.TableDB.get_clean(window.choosenTable, (doc)=>{
     basicData.columnNames = doc.values
@@ -8,14 +13,8 @@ window.TableDB.get_clean(window.choosenTable, (doc)=>{
     colspan = basicData.columnNames.length
 });
 
-const CurrentTable = new DB(`table-${window.choosenTable}`);
-
-let data = [['N/A']];
-let colspan;
-let newData = [];
-
 function submitData(){
-    console.log(newData)
+    window.socket.emit('new query', {table_name: window.choosenTable, data: newData});
 }
 
 function changeType(inpt){
@@ -75,7 +74,7 @@ function changeType(inpt){
         {/each}
     </tr>
 
-    {#each data as d, n}
+    {#each DATA as d, n}
         <tr class="display">
             <td class="display">{n}</td>
             {#each d as item}

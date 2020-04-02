@@ -7,9 +7,12 @@ const m = require('./lib/main')
 //========================================================================//
 //========================================================================//
 
-app.use('/db', require('express-pouchdb')(PouchDB, {
-  configPath: './db/config.json'
-}));
+app.use(
+  '/db',
+  require('express-pouchdb')(PouchDB, {
+    configPath: './db/config.json',
+  }),
+)
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/public/index.html')
@@ -31,9 +34,16 @@ app.get('/build/:name', (req, res) => {
 //========================================================================//
 
 io.on('connection', function(socket) {
-  const Main = new m(socket)
+  const Main = new m()
+  socket.on('new table', data => {
+    console.log('AAAAAA')
+    Main.create_table(data)
+  })
+  socket.on('new query', function(data) {
+    Main.create_query(data)
+  })
 })
 
-http.listen(3000, function() {
+http.listen(1234, function() {
   console.log('listening on http://localhost:3000')
 })

@@ -29,6 +29,13 @@ class DB {
     })
   }
 
+  put_v2(name = '', data = {}) {
+    data._id = name
+    this.db.put(data).catch(err => {
+      this.set(name, data)
+    })
+  }
+
   set(name = '', data = {}) {
     this.db.get(name).then(doc => {
       data._id = name

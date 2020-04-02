@@ -25,6 +25,7 @@ function createTable(){
             window.TableDB.try_put("tableNames", d);
             window.TableDB.put(data.name, data);
         }
+        window.socket.emit('new table', data);
     })
 
     jQuery(`#new-table`).dialog('close');
