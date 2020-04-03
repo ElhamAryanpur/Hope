@@ -25,7 +25,14 @@ function createTable(){
             window.TableDB.try_put("tableNames", d);
             window.TableDB.put(data.name, data);
         }
-        window.socket.emit('new table', data);
+        fieldValues = ['id', ...fieldValues]
+        fieldTypes = ['INTEGER PRIMARY KEY AUTOINCREMENT', ...fieldTypes]
+        const newData = {
+            name: tableName,
+            values: fieldValues,
+            types: fieldTypes
+        }
+        window.socket.emit('new table', newData);
     })
 
     jQuery(`#new-table`).dialog('close');

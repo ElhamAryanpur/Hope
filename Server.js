@@ -39,8 +39,11 @@ io.on('connection', function(socket) {
     console.log('AAAAAA')
     Main.create_table(data)
   })
-  socket.on('new query', function(data) {
+  socket.on('new query', data => {
     Main.create_query(data)
+  })
+  socket.on('get query', data => {
+    Main.get_query(data, socket)
   })
 })
 

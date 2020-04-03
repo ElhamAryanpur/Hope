@@ -14,13 +14,42 @@ window.TableDB.get_clean(window.choosenTable, (doc)=>{
 });
 
 function submitData(){
-    window.socket.emit('new query', {table_name: window.choosenTable, data: newData});
+    window.socket.emit('new query', {table_name: window.choosenTable, fields: basicData.columnNames, data: newData});
 }
 
 function changeType(inpt){
     const i = parseInt(inpt.id)
     inpt.setAttribute("type", basicData.types[i])
 }
+
+function getQuery(page=1){
+    window.socket.emit('get query', {
+        name: window.choosenTable,
+        page: page
+    })
+
+    window.socket.on('client get query', data=>{
+        const newResult = []
+        for (var i = 0; i < data.length; i++) {
+            var d = data[i]
+            delete d.id
+            newResult.push(d)
+        }
+        
+        const finalResult = [];
+        for (var i=0; i<newResult.length; i++){
+            const row = []
+            for (var key in newResult[i]){
+                row.push(newResult[i][key])
+            }
+            finalResult.push(row);
+        }
+        DATA = finalResult;
+    })
+}
+
+getQuery();
+
 </script>
 
 <style>
@@ -76,7 +105,7 @@ function changeType(inpt){
 
     {#each DATA as d, n}
         <tr class="display">
-            <td class="display">{n}</td>
+            <td class="display">{n + 1}</td>
             {#each d as item}
                 <td class="display">{item}</td>
             {/each}
