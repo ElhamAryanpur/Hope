@@ -45,6 +45,9 @@ io.on('connection', function(socket) {
   socket.on('get query', data => {
     Main.get_query(data, socket)
   })
+  socket.on('delete table', data => {
+    Main.delete_table(data)
+  })
 })
 
 http.listen(1234, function() {

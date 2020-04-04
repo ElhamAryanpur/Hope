@@ -4,16 +4,19 @@
   import Table from './table/Table.svelte'
   import TableView from './table/TableView.svelte'
 
-  let choosen = window.choosen;
-  if (choosen == null){ choosen = 'table' }
-  
+  let choosen = window.choosen
+  if (choosen == null) {
+    choosen = 'table'
+  }
 
-  window.updateChoosen = function(){ choosen = window.choosen }
+  window.updateChoosen = function() {
+    choosen = window.choosen
+  }
 
   window.HEIGHT = window.innerHeight - 10
   let width
   window.addEventListener('resize', () => {
-    window.HEIGHT = window.innerHeight - 10
+    location.reload()
   });
 </script>
 
@@ -34,7 +37,6 @@
     padding-bottom: 30px;
     overflow-y: scroll;
   }
-
 </style>
 
 <table style="width: 100%">
@@ -48,13 +50,13 @@
     </td>
     <td>
       <div id="main" style="max-height: {window.HEIGHT - 100}px;">
-          {#if choosen === 'dash'}
-            <Dash/>
-          {:else if choosen === 'table'}
-             <Table/>
-          {:else if choosen === 'tableview'}
-             <TableView/>
-          {/if}
+        {#if choosen === 'dash'}
+          <Dash />
+        {:else if choosen === 'table'}
+          <Table />
+        {:else if choosen === 'tableview'}
+          <TableView />
+        {/if}
       </div>
     </td>
   </tr>

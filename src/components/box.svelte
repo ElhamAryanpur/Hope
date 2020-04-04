@@ -5,11 +5,11 @@
     text-align: center;
     cursor: pointer;
     font-weight: bold;
-    color: #6AAAC9;
-    border: 1px solid #6AAAC9;
+    color: #6aaac9;
+    border: 1px solid #6aaac9;
   }
 </style>
 
 <div class="box">
-  <slot/>
+  <slot />
 </div>
