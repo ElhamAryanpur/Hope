@@ -18,12 +18,13 @@
   },
   "homepage": "https://github.com/ElhamAryanpur/Hope#readme",
   "scripts": {
-    "init": "npm install && npm run build",
+    "init": "npm install && npm run build && mkdir db",
     "build": "rollup -c",
     "dev": "rollup -c -w",
     "start": "sirv public",
     "server": "cd db && node ../Server.js",
-    "code": "bash code.sh"
+    "code": "bash code.sh",
+    "production": "env NODE_ENV=production && cd db && pm2 start ../Server.js"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^11.0.0",
@@ -38,6 +39,7 @@
     "express": "^4.17.1",
     "express-pouchdb": "^4.2.0",
     "opn": "^6.0.0",
+    "pm2": "^4.2.3",
     "pouchdb": "^7.2.1",
     "sirv-cli": "^0.4.4",
     "socket.io": "^2.3.0",

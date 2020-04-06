@@ -1,4 +1,4 @@
-![](Hope-logo/cover.png)
+![](public/logo/cover.png)
 
 ## Status
 

@@ -35,22 +35,7 @@ app.get('/build/:name', (req, res) => {
 //========================================================================//
 
 io.on('connection', function(socket) {
-  const Main = new m()
-  socket.on('new table', data => {
-    Main.create_table(data)
-  })
-  socket.on('new query', data => {
-    Main.create_query(data)
-  })
-  socket.on('get query', data => {
-    Main.get_query(data, socket)
-  })
-  socket.on('delete table', data => {
-    Main.delete_table(data)
-  })
-  socket.on('delete query', data => {
-    Main.delete_query(data)
-  })
+  const Main = new m(socket)
 })
 
 http.listen(35426, function() {
