@@ -3,6 +3,7 @@ const app = require('express')()
 const http = require('http').createServer(app)
 const io = require('socket.io')(http)
 const m = require('./lib/main')
+const opn = require('opn')
 
 //========================================================================//
 //========================================================================//
@@ -36,7 +37,6 @@ app.get('/build/:name', (req, res) => {
 io.on('connection', function(socket) {
   const Main = new m()
   socket.on('new table', data => {
-    console.log('AAAAAA')
     Main.create_table(data)
   })
   socket.on('new query', data => {
@@ -48,8 +48,12 @@ io.on('connection', function(socket) {
   socket.on('delete table', data => {
     Main.delete_table(data)
   })
+  socket.on('delete query', data => {
+    Main.delete_query(data)
+  })
 })
 
-http.listen(1234, function() {
-  console.log('listening on http://localhost:3000')
+http.listen(35426, function() {
+  console.log('listening on http://localhost:35426')
+  //opn('http://0.0.0.0:35426')
 })

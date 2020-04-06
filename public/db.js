@@ -66,4 +66,15 @@ class DB {
       })
       .on('change', callback)
   }
+
+  delete(name, callback) {
+    this.get(name, doc => {
+      this.db.remove(doc, (err, resp) => {
+        if (err) {
+          callback(err)
+        }
+        callback(resp)
+      })
+    })
+  }
 }

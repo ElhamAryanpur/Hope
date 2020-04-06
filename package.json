@@ -37,6 +37,7 @@
   "dependencies": {
     "express": "^4.17.1",
     "express-pouchdb": "^4.2.0",
+    "opn": "^6.0.0",
     "pouchdb": "^7.2.1",
     "sirv-cli": "^0.4.4",
     "socket.io": "^2.3.0",

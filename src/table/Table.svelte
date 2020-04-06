@@ -25,6 +25,8 @@
     window.choosenTable = choosen;
   }
 
+  window.changeTable = changeTable;
+
 </script>
 
 <style>

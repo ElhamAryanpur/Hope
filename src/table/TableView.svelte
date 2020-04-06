@@ -15,6 +15,7 @@
   })
 
   function submitData() {
+    console.log("AAAA")
     window.socket.emit('new query', {
       table_name: window.choosenTable,
       fields: basicData.columnNames,
@@ -67,9 +68,26 @@
         if (index > -1) {
           names.splice(index, 1)
         }
-        window.TableDB.put_v2('tableNames', {names: names});
-        window.choosen = 'table';
+        window.TableDB.put_v2('tableNames', { names: names })
+        window.TableDB.delete(window.choosenTable, resp => {
+          location.reload()
+          window.changePage('table')
+        })
       })
+    }
+  }
+
+  function deleteQuery(rowNum) {
+    const rowData = DATA[rowNum]
+    const confirmation = confirm('Are You Sure You Want To Delete This Table?')
+    if (confirmation) {
+      window.socket.emit('delete query', {
+        name: window.choosenTable,
+        columnNames: basicData.columnNames,
+        data: rowData,
+      })
+      DATA.splice(rowNum, 1)
+      DATA = DATA
     }
   }
 </script>
@@ -126,7 +144,7 @@
       <Dialog
         title="Add New Query To The Table"
         button="New"
-        id="{window.choosenTable}-new">
+        id="{window.choosenTable}-new-dialog">
 
         {#each basicData.columnNames as name, n}
           <input
@@ -161,14 +179,18 @@
   </tr>
 
   {#each DATA as d, n}
-    <tr class="display">
+    <tr class="display" id="row-{n}-{window.choosenTable}-table">
       <td class="display">{n + 1}</td>
       {#each d as item}
         <td class="display">{item}</td>
       {/each}
       <td>
         <img class="display" src="/icon-edit.png" alt="Edit" />
-        <img class="display" src="/icon-delete.png" alt="Delete" />
+        <img
+          on:click={() => deleteQuery(n)}
+          class="display"
+          src="/icon-delete.png"
+          alt="Delete" />
       </td>
     </tr>
   {/each}
