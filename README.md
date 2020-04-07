@@ -3,7 +3,6 @@
 ## Status
 
 ![](https://github.com/ElhamAryanpur/hope/workflows/CI/badge.svg)
-[![Known Vulnerabilities](https://snyk.io/test/github/ElhamAryanpur/Hope/badge.svg?targetFile=package.json)](https://snyk.io/test/github/ElhamAryanpur/Hope?targetFile=package.json)
 
 ## About
 
