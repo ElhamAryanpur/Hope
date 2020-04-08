@@ -6,15 +6,15 @@
   let TABLE_NAMES = []
 
   window.TableDB = new DB('tableDB')
-  window.TableDB.get('tableNames', data => {
-    if (data.names != undefined) {
+  window.TableDB.get_clean('tableNames', data => {
+    if (data.names != null) {
       TABLE_NAMES = data.names
     }
   })
 
   window.TableDB.change(() => {
-    window.TableDB.get('tableNames', data => {
-      if (data.names != undefined) {
+    window.TableDB.get_clean('tableNames', data => {
+      if (data.names != null) {
         TABLE_NAMES = data.names
       }
     })

@@ -16,13 +16,13 @@ function createTable(){
         types: fieldTypes
     };
     window.TableDB.get("tableNames", (doc)=>{
-        if (doc.status == 404){
-            window.TableDB.try_put("tableNames", {names: [data.name]});
+        if (doc == null){
+            window.TableDB.put("tableNames", {names: [data.name]});
             window.TableDB.put(data.name, data);
         } else {
             const d = doc;
             d.names.push(data.name)
-            window.TableDB.try_put("tableNames", d);
+            window.TableDB.put("tableNames", d);
             window.TableDB.put(data.name, data);
         }
         fieldValues = ['id', ...fieldValues]

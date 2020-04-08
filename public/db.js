@@ -1,80 +1,41 @@
 class DB {
   constructor(name = 'db') {
-    this.db = new PouchDB(`/db/${name}`)
+    this.ch = false
+    this.db = name
+    window.socket.emit('db init', { name: this.db })
   }
 
   get(name = '', callback) {
-    this.db
-      .get(name)
-      .then(doc => {
-        callback(doc)
-      })
-      .catch(err => {
-        callback(err)
-      })
+    window.socket.emit('db get', { name: this.db, key: name })
+    window.socket.on('db get client', data => {
+      callback(data)
+    })
   }
 
   get_clean(name = '', callback) {
     this.get(name, doc => {
-      if (doc.status != 404) {
+      if (doc != null) {
         callback(doc)
       }
     })
   }
 
   put(name = '', data = {}) {
-    data._id = name
-    this.db.put(data).catch(err => {
-      console.log(err)
-    })
-  }
-
-  put_v2(name = '', data = {}) {
-    data._id = name
-    this.db.put(data).catch(err => {
-      this.set(name, data)
-    })
-  }
-
-  set(name = '', data = {}) {
-    this.db.get(name).then(doc => {
-      data._id = name
-      data._rev = doc._rev
-
-      this.db.put(data).catch(err => {
-        console.log(err)
-      })
-    })
-  }
-
-  try_put(name = '', data = {}) {
-    this.get(name, response => {
-      if (response.status != 404) {
-        this.set(name, data)
-      } else {
-        this.put(name, data)
-      }
-    })
+    window.socket.emit('db set', { name: this.db, key: name, value: data })
+    if (this.ch == 'function') {
+      this.ch()
+    }
   }
 
   change(callback) {
-    this.db
-      .changes({
-        since: 'now',
-        live: true,
-        include_docs: true,
-      })
-      .on('change', callback)
+    this.ch = callback
   }
 
   delete(name, callback) {
-    this.get(name, doc => {
-      this.db.remove(doc, (err, resp) => {
-        if (err) {
-          callback(err)
-        }
-        callback(resp)
-      })
+    window.socket.emit('db delete', {
+      name: this.db,
+      key: name,
+      callback: callback,
     })
   }
 }

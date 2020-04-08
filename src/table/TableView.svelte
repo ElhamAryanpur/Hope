@@ -15,7 +15,6 @@
   })
 
   function submitData() {
-    console.log("AAAA")
     window.socket.emit('new query', {
       table_name: window.choosenTable,
       fields: basicData.columnNames,
@@ -63,12 +62,16 @@
     if (confirmation) {
       window.socket.emit('delete table', { name: window.choosenTable })
       window.TableDB.get_clean('tableNames', doc => {
-        var names = doc.names
-        const index = names.indexOf(window.choosenTable)
-        if (index > -1) {
-          names.splice(index, 1)
+        const filterNames = []
+        console.log(doc)
+        console.log(window.choosenTable)
+        for (var i = 0; i < doc.names.length; i++) {
+          if (doc.names[i] != window.choosenTable) {
+            filterNames.push(doc.names[i])
+          }
         }
-        window.TableDB.put_v2('tableNames', { names: names })
+
+        window.TableDB.put('tableNames', { names: filterNames })
         window.TableDB.delete(window.choosenTable, resp => {
           location.reload()
           window.changePage('table')

@@ -1,4 +1,3 @@
-const PouchDB = require('pouchdb')
 const app = require('express')()
 const http = require('http').createServer(app)
 const io = require('socket.io')(http)
@@ -7,13 +6,6 @@ const opn = require('opn')
 
 //========================================================================//
 //========================================================================//
-
-app.use(
-  '/db',
-  require('express-pouchdb')(PouchDB, {
-    configPath: './db/config.json',
-  }),
-)
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/public/index.html')
