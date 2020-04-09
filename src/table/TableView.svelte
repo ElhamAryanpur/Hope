@@ -21,7 +21,6 @@
       data: newData,
     })
     DATA = [...DATA, newData]
-    jQuery(`#${window.choosenTable}-new`).dialog('close')
   }
 
   function changeType(inpt) {
@@ -68,11 +67,10 @@
           }
         }
 
+        window.TableDB.delete(window.choosenTable)
+        window.socket.emit('delete table', { name: window.choosenTable })
         window.TableDB.put('tableNames', { names: filterNames })
-        window.TableDB.delete(window.choosenTable, resp => {
-          window.socket.emit('delete table', { name: window.choosenTable })
-          window.changePage('table')
-        })
+        location.reload()
       })
     }
   }
@@ -112,6 +110,12 @@
     height: 20px;
   }
 
+  button {
+    padding: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
   .delete-button {
     padding: 20px;
   }
@@ -126,6 +130,7 @@
   <br />
 
   <tr>
+    <td />
     <td>
       <Box>
         <button class="delete-button" on:click={() => deleteTable()}>
@@ -133,37 +138,34 @@
         </button>
       </Box>
     </td>
+
     <td>
       <Dialog
         title="Filter The Table Data"
         button="Filter"
+        style="width: 100%; margin: 0;"
         id="{window.choosenTable}-filter" />
     </td>
 
-    <td>
-      <Dialog
-        title="Add New Query To The Table"
-        button="New"
-        id="{window.choosenTable}-new-dialog">
-
-        {#each basicData.columnNames as name, n}
-          <input
-            id={n}
-            placeholder={name}
-            bind:value={newData[`${n}`]}
-            use:changeType />
-          <br />
-        {/each}
-
-        <br />
-        <br />
-        <br />
-        <button on:click={() => submitData()}>Submit</button>
-
-      </Dialog>
-    </td>
-
   </tr>
+
+  <tr>
+    <td />
+    {#each basicData.columnNames as name, n}
+      <td>
+        <input
+          id={n}
+          placeholder={name}
+          bind:value={newData[`${n}`]}
+          use:changeType />
+        <br />
+      </td>
+    {/each}
+    <td>
+      <button on:click={() => submitData()}>Submit</button>
+    </td>
+  </tr>
+  <br />
   <tr class="display">
     <td class="display">
       <span>No.</span>
