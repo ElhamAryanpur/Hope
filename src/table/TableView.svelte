@@ -60,11 +60,8 @@
   function deleteTable() {
     const confirmation = confirm('Are You Sure You Want To Delete This Table?')
     if (confirmation) {
-      window.socket.emit('delete table', { name: window.choosenTable })
       window.TableDB.get_clean('tableNames', doc => {
         const filterNames = []
-        console.log(doc)
-        console.log(window.choosenTable)
         for (var i = 0; i < doc.names.length; i++) {
           if (doc.names[i] != window.choosenTable) {
             filterNames.push(doc.names[i])
@@ -73,7 +70,7 @@
 
         window.TableDB.put('tableNames', { names: filterNames })
         window.TableDB.delete(window.choosenTable, resp => {
-          location.reload()
+          window.socket.emit('delete table', { name: window.choosenTable })
           window.changePage('table')
         })
       })

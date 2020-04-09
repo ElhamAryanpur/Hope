@@ -7,8 +7,8 @@ class DB {
 
   get(name = '', callback) {
     window.socket.emit('db get', { name: this.db, key: name })
-    window.socket.on('db get client', data => {
-      callback(data)
+    window.socket.on('db get client', async data => {
+      await callback(data)
     })
   }
 
