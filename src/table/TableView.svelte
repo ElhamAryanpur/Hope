@@ -20,7 +20,7 @@
       fields: basicData.columnNames,
       data: newData,
     })
-    DATA = [...DATA, newData]
+    getQuery()
   }
 
   function changeType(inpt) {
@@ -88,6 +88,15 @@
       DATA = DATA
     }
   }
+
+  function editQuery(rowNum) {
+    const noOfFields = basicData.columnNames.length
+    const inputs = []
+    for (var i = 0; i < noOfFields; i++) {
+      inputs.push(document.getElementById(`row-${rowNum}-field-${i}`))
+    }
+    console.log(inputs)
+  }
 </script>
 
 <style>
@@ -118,6 +127,7 @@
 
   .delete-button {
     padding: 20px;
+    width: 100%;
   }
 </style>
 
@@ -183,11 +193,15 @@
   {#each DATA as d, n}
     <tr class="display" id="row-{n}-{window.choosenTable}-table">
       <td class="display">{n + 1}</td>
-      {#each d as item}
-        <td class="display">{item}</td>
+      {#each d as item, m}
+        <td class="display" id="row-{n}-field-{m}">{item}</td>
       {/each}
       <td>
-        <img class="display" src="/icon-edit.png" alt="Edit" />
+        <img
+          on:click={() => editQuery(n)}
+          class="display"
+          src="/icon-edit.png"
+          alt="Edit" />
         <img
           on:click={() => deleteQuery(n)}
           class="display"
