@@ -15,12 +15,16 @@
   })
 
   function submitData() {
-    window.socket.emit('new query', {
-      table_name: window.choosenTable,
-      fields: basicData.columnNames,
-      data: newData,
-    })
-    getQuery()
+    if (newData.length != 0) {
+      window.socket.emit('new query', {
+        table_name: window.choosenTable,
+        fields: basicData.columnNames,
+        data: newData,
+      })
+      getQuery()
+    } else {
+      alert('Please Fill The Fields Before Submitting')
+    }
   }
 
   function changeType(inpt) {

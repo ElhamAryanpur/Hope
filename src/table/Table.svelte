@@ -18,15 +18,14 @@
         TABLE_NAMES = data.names
       }
     })
-  });
+  })
 
-  function changeTable(choosen=''){
-    window.changePage('tableview');
-    window.choosenTable = choosen;
+  function changeTable(choosen = '') {
+    window.changePage('tableview')
+    window.choosenTable = choosen
   }
 
-  window.changeTable = changeTable;
-
+  window.changeTable = changeTable
 </script>
 
 <style>
@@ -51,5 +50,5 @@
   <TableNew />
 </Dialog>
 {#each TABLE_NAMES as name}
-  <button class="box" on:click={()=> changeTable(name)}>{name}</button>
+  <button class="box" on:click={() => changeTable(name)}>{name}</button>
 {/each}

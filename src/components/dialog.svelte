@@ -1,50 +1,90 @@
 <script>
-    import Box from './box.svelte';
+  import Box from './box.svelte'
 
-    export let id;
-    if (id == undefined){ id = "dialog" }
+  export let id
+  if (id == undefined) {
+    id = 'dialog'
+  }
 
-    export let title;
-    if (title == undefined){ title = "" }
+  export let title
+  if (title == undefined) {
+    title = ''
+  }
 
-    export let button;
-    if (button == undefined){ button = false }
+  export let button
+  if (button == undefined) {
+    button = false
+  }
 
-    export let style;
-    if (style == undefined){ style = "" }
+  export let style
+  if (style == undefined) {
+    style = ''
+  }
 
+  import { onMount } from 'svelte'
 
+  onMount(() => {
+    const height = window.HEIGHT - 100
+    const d = document.getElementById(id)
+    if (button) {
+    } else {
+      d.show()
+    }
+  })
 
-    import { onMount } from 'svelte';
+  function show() {
+    document.getElementById(id).show()
+  }
 
-    onMount(() => {
-        if (button == false){ jQuery("#" + id).dialog({ width:'auto' }); }
-        else { jQuery("#" + id).dialog({
-            autoOpen: false,
-            width:'auto',
-            maxHeight: window.HEIGHT - 100
-        }); }
-    });
+  function close() {
+    document.getElementById(id).close()
+  }
 </script>
 
 <style>
-    button{
-        padding: 20px;
-        background: #1a2835;
-        border-radius: 10px;
-        text-align: center;
-        cursor: pointer;
-        font-weight: bold;
-        color: #6AAAC9;
-        border: 1px solid #6AAAC9;
-        margin: 10px;
-    }
+  button {
+    padding: 20px;
+    background: #1a2835;
+    border-radius: 10px;
+    text-align: center;
+    cursor: pointer;
+    font-weight: bold;
+    color: #6aaac9;
+    border: 1px solid #6aaac9;
+    margin: 10px;
+  }
+
+  dialog {
+    background: #1a2835;
+    color: #6aaac9;
+    z-index: 99;
+    position: absolute;
+    top: 20%;
+  }
+
+  table {
+    text-align: center;
+  }
 </style>
 
-<div id="{id}" title="{title}">
-    <slot></slot>
-</div>
+<dialog {id}>
+  <table>
+    <tr>
+      <td colspan="5">
+        <h2>{title}</h2>
+      </td>
+      <td>
+        <button on:click={() => close()}>X</button>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="6">
+        <slot />
+      </td>
+    </tr>
+  </table>
+</dialog>
 
 {#if button != false}
-    <button class="box" onclick="jQuery(`#{id}`).dialog('open');" style="{style}">{button}</button>
+  <button class="box" on:click={() => show()} {style}>{button}</button>
 {/if}
