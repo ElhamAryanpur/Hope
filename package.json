@@ -24,7 +24,7 @@
     "start": "sirv public",
     "server": "cd db && node ../Server.js",
     "code": "bash code.sh",
-    "production": "env NODE_ENV=production && cd db && pm2 start ../Server.js -i max",
+    "production": "env NODE_ENV=production && cd db && pm2 start ../Server.js -i max"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^11.0.0",
