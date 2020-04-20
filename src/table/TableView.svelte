@@ -14,6 +14,10 @@
     colspan = basicData.columnNames.length
   })
 
+  window.socket.on('update', ()=>{
+    getQuery()
+  })
+
   function submitData() {
     if (newData.length != 0) {
       window.socket.emit('new query', {
