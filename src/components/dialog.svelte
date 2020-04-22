@@ -32,11 +32,11 @@
     }
   })
 
-  function show() {
+  window.dialog_show = (id)=> {
     document.getElementById(id).show()
   }
 
-  function close() {
+  window.dialog_close = (id) => {
     document.getElementById(id).close()
   }
 </script>
@@ -74,7 +74,7 @@
         <h2>{title}</h2>
       </td>
       <td>
-        <button on:click={() => close()}>X</button>
+        <button on:click={() => window.dialog_close(id)}>X</button>
       </td>
     </tr>
     <tr>
@@ -86,5 +86,5 @@
 </dialog>
 
 {#if button != false}
-  <button class="box" on:click={() => show()} {style}>{button}</button>
+  <button class="box" on:click={() => window.dialog_show(id)} {style}>{button}</button>
 {/if}

@@ -16,7 +16,8 @@ function createTable(){
         types: fieldTypes
     };
     window.TableDB.get("tableNames", (doc)=>{
-        if (doc == null){
+        if (doc.names.includes(tableName) != true){
+            if (doc == null){
             window.TableDB.put("tableNames", {names: [data.name]});
             window.TableDB.put(data.name, data);
         } else {
@@ -32,10 +33,13 @@ function createTable(){
             values: fieldValues,
             types: fieldTypes
         }
+        
         window.socket.emit('new table', newData);
+        }
+        
     })
 
-    jQuery(`#new-table`).dialog('close');
+    window.dialog_close(`new-table`);
 }
 
 let fieldValues = [];

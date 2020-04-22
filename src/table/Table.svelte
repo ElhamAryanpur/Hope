@@ -6,18 +6,21 @@
   let TABLE_NAMES = []
 
   window.TableDB = new DB('tableDB')
-  window.TableDB.get_clean('tableNames', data => {
+ function getUpdates(){
+    window.TableDB.get_clean('tableNames', data => {
     if (data.names != null) {
       TABLE_NAMES = data.names
     }
   })
+ }
+ getUpdates()
+ 
+ window.socket.on('update table', ()=>{
+   getUpdates()
+ })
 
   window.TableDB.change(() => {
-    window.TableDB.get_clean('tableNames', data => {
-      if (data.names != null) {
-        TABLE_NAMES = data.names
-      }
-    })
+    getUpdates()
   })
 
   function changeTable(choosen = '') {
