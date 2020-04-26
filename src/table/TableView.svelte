@@ -3,6 +3,8 @@
   import Box from '../components/box.svelte'
 
   let DATA = [['N/A']]
+  let EDIT = {}
+  let EDIT_SHOW = false
   let colspan
   let newData = []
   let LOADED = false
@@ -101,9 +103,16 @@
     const noOfFields = basicData.columnNames.length
     const inputs = []
     for (var i = 0; i < noOfFields; i++) {
-      inputs.push(document.getElementById(`row-${rowNum}-field-${i}`))
+      inputs.push(document.getElementById(`row-${rowNum}-field-${i}`).innerHTML)
     }
-    console.log(inputs)
+    EDIT = {
+      field: basicData.columnNames,
+      type: basicData.types,
+      data: inputs
+    }
+
+    EDIT_SHOW = true
+    window.dialog_show(`${window.choosenTable}-edit-dialog`)
   }
 </script>
 
@@ -197,6 +206,15 @@
       <span>Setting</span>
     </td>
   </tr>
+
+  {#if EDIT_SHOW == true}
+    <Dialog id="{window.choosenTable}-edit-dialog" title="EDIT DATA">
+      {#each EDIT.data as e, n}
+        <span>Field {EDIT.field[n]}: </span>
+        <input type="{EDIT.type[n]}}" placeholder="{e}"><br>
+      {/each}
+    </Dialog>
+  {/if}
 
   {#each DATA as d, n}
     <tr class="display" id="row-{n}-{window.choosenTable}-table">

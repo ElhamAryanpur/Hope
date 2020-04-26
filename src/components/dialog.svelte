@@ -21,6 +21,11 @@
     style = ''
   }
 
+  export let close
+  if (close == undefined){
+    close = false
+  }
+
   import { onMount } from 'svelte'
 
   onMount(() => {
