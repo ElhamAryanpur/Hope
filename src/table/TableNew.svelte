@@ -16,19 +16,14 @@
       types: fieldTypes
     };
     window.TableDB.get("tableNames", doc => {
-      if (Object.entries(doc).length != 0) {
-        if (doc.names.includes(tableName) != true) {
-          if (doc == null) {
-            window.TableDB.put("tableNames", { names: [data.name] });
-            window.TableDB.put(data.name, data);
-          } else {
-            const d = doc;
-            d.names.push(data.name);
-            window.TableDB.put("tableNames", d);
-            window.TableDB.put(data.name, data);
-          }
-        } else {
+      if (doc.names.includes(tableName) != true) {
+        if (doc == null) {
           window.TableDB.put("tableNames", { names: [data.name] });
+          window.TableDB.put(data.name, data);
+        } else {
+          const d = doc;
+          d.names.push(data.name);
+          window.TableDB.put("tableNames", d);
           window.TableDB.put(data.name, data);
         }
         fieldValues = ["id", ...fieldValues];
