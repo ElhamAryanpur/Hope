@@ -1,34 +1,34 @@
 <script>
-  import Dialog from '../components/dialog.svelte'
-  import Box from '../components/box.svelte'
-  import TableNew from './TableNew.svelte'
+  import Dialog from "../components/dialog.svelte";
+  import Box from "../components/box.svelte";
+  import TableNew from "./TableNew.svelte";
 
-  let TABLE_NAMES = []
+  let TABLE_NAMES = [];
 
-  window.TableDB = new DB('tableDB')
- function getUpdates(){
-    window.TableDB.get_clean('tableNames', data => {
-    if (data.names != null) {
-      TABLE_NAMES = data.names
-    }
-  })
- }
- getUpdates()
- 
- window.socket.on('update table', ()=>{
-   getUpdates()
- })
+  window.TableDB = new DB("tableDB");
+  function getUpdates() {
+    window.TableDB.get_clean("tableNames", data => {
+      if (data.names != null) {
+        TABLE_NAMES = data.names;
+      }
+    });
+  }
+  getUpdates();
+
+  window.socket.on("update table", () => {
+    getUpdates();
+  });
 
   window.TableDB.change(() => {
-    getUpdates()
-  })
+    getUpdates();
+  });
 
-  function changeTable(choosen = '') {
-    window.changePage('tableview')
-    window.choosenTable = choosen
+  function changeTable(choosen = "") {
+    window.changePage("tableview");
+    window.choosenTable = choosen;
   }
 
-  window.changeTable = changeTable
+  window.changeTable = changeTable;
 </script>
 
 <style>
@@ -42,16 +42,25 @@
     width: 100px;
     background: #1a2835;
   }
+
+  .down {
+    animation: fadeInDown 0.7s;
+  }
 </style>
+
+<svelte:head>
+  <title>Hope</title>
+</svelte:head>
 
 <Dialog
   id="new-table"
   button="New Table"
   style="padding: 7px; border-radius: 0px; height: 100px; width: 100px;
-  margin-left: 0px;"
+  margin-left: 0px; animation: fadeInDown 0.7s;"
   title="Create A New Table">
   <TableNew />
 </Dialog>
+
 {#each TABLE_NAMES as name}
-  <button class="box" on:click={() => changeTable(name)}>{name}</button>
+  <button class="box down" on:click={() => changeTable(name)}>{name}</button>
 {/each}

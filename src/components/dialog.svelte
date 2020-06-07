@@ -1,54 +1,52 @@
 <script>
-  import Box from './box.svelte'
+  import Box from "./box.svelte";
+  import { center } from "../lib/center.svelte";
 
-  export let id
+  export let id;
   if (id == undefined) {
-    id = 'dialog'
+    id = "dialog";
   }
 
-  export let title
+  export let title;
   if (title == undefined) {
-    title = ''
+    title = "";
   }
 
-  export let button
+  export let button;
   if (button == undefined) {
-    button = false
+    button = false;
   }
 
-  export let style
+  export let style;
   if (style == undefined) {
-    style = ''
+    style = "";
   }
 
-  export let close
-  if (close == undefined){
-    close = false
-  }
-
-  import { onMount } from 'svelte'
+  import { onMount } from "svelte";
 
   onMount(() => {
-    const height = window.HEIGHT - 100
-    const d = document.getElementById(id)
+    const height = window.HEIGHT - 100;
+    const d = document.getElementById(id);
     if (button) {
     } else {
-      d.show()
+      d.show();
     }
-  })
 
-  window.dialog_show = (id)=> {
-    document.getElementById(id).show()
-  }
+    window.dialog_close(id);
+  });
 
-  window.dialog_close = (id) => {
-    document.getElementById(id).close()
-  }
+  window.dialog_show = id => {
+    document.getElementById(id).style.display = "";
+  };
+
+  window.dialog_close = id => {
+    document.getElementById(id).style.display = "none";
+  };
 </script>
 
 <style>
   button {
-    padding: 20px;
+    padding: 10px;
     background: #1a2835;
     border-radius: 10px;
     text-align: center;
@@ -56,30 +54,36 @@
     font-weight: bold;
     color: #6aaac9;
     border: 1px solid #6aaac9;
+    border-radius: 50px;
     margin: 10px;
   }
 
-  dialog {
+  .dialog {
     background: #1a2835;
     color: #6aaac9;
     z-index: 99;
-    position: absolute;
-    top: 20%;
+    position: fixed;
+    border-radius: 10px;
+    padding: 1%;
+    display: block;
+    animation: backInDown 1s;
   }
 
-  table {
+  .table {
     text-align: center;
   }
 </style>
 
-<dialog {id}>
-  <table>
+<table use:center class="dialog" {id}>
+  <table class="table">
     <tr>
       <td colspan="5">
-        <h2>{title}</h2>
+        <h2 class="unselectable">{title}</h2>
       </td>
       <td>
-        <button on:click={() => window.dialog_close(id)}>X</button>
+        <button class="unselectable" on:click={() => window.dialog_close(id)}>
+          X
+        </button>
       </td>
     </tr>
     <tr>
@@ -88,8 +92,10 @@
       </td>
     </tr>
   </table>
-</dialog>
+</table>
 
 {#if button != false}
-  <button class="box" on:click={() => window.dialog_show(id)} {style}>{button}</button>
+  <button class="box" on:click={() => window.dialog_show(id)} {style}>
+    {button}
+  </button>
 {/if}
