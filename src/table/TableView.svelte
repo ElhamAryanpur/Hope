@@ -168,6 +168,7 @@
     padding: 10px;
     padding-left: 20px;
     padding-right: 20px;
+    border: 1px solid #6aaac9;
   }
 
   .delete-button {
@@ -185,6 +186,16 @@
 
   .down {
     animation: backInDown 0.5s;
+  }
+
+  .header{
+    font-size: 160%;
+    font-weight: bold;
+  }
+
+  .mainContent{
+    font-size: 100%;
+    font-weight: bold;
   }
 </style>
 
@@ -245,7 +256,7 @@
       <span>No.</span>
     </td>
     {#each basicData.columnNames as name}
-      <td class="display unselectable">
+      <td class="display unselectable header">
         <span>{name}</span>
       </td>
     {/each}
@@ -255,10 +266,14 @@
   </tr>
 
   {#if EDIT_SHOW == true}
-    <Dialog id="{window.choosenTable}-edit-dialog" title="EDIT DATA">
+    <Dialog
+      id="{window.choosenTable}-edit-dialog"
+      title="EDIT DATA"
+      style=""
+      open="true">
       {#each EDIT.data as e, n}
         <span>Field {EDIT.field[n]}:</span>
-        <input type="{EDIT.type[n]}}" placeholder={e} />
+        <input type="{EDIT.type[n]}}" placeholder={e} value={e} />
         <br />
       {/each}
     </Dialog>
@@ -268,7 +283,7 @@
     <tr class="display" id="row-{n}-{window.choosenTable}-table">
       <td class="display left">{n + 1}</td>
       {#each d as item, m}
-        <td class="display right" id="row-{n}-field-{m}">{item}</td>
+        <td class="display right mainContent" id="row-{n}-field-{m}">{item}</td>
       {/each}
       <td>
         <img

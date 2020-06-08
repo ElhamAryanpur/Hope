@@ -22,17 +22,22 @@
     style = "";
   }
 
+  export let open;
+  if (open == undefined) {
+    open = "false";
+  }
+
   import { onMount } from "svelte";
 
   onMount(() => {
     const height = window.HEIGHT - 100;
-    const d = document.getElementById(id);
     if (button) {
     } else {
-      d.show();
+      window.dialog_show(id);
     }
-
-    window.dialog_close(id);
+    if (open == "false") {
+      window.dialog_close(id);
+    }
   });
 
   window.dialog_show = id => {
@@ -66,7 +71,7 @@
     border-radius: 10px;
     padding: 1%;
     display: block;
-    animation: backInDown 1s;
+    animation: backInDown 0.3s;
   }
 
   .table {
