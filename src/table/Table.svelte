@@ -62,5 +62,7 @@
 </Dialog>
 
 {#each TABLE_NAMES as name}
-  <button class="box down" on:click={() => changeTable(name)}>{name}</button>
+  <button class="box down" title={name} on:click={() => changeTable(name)}>
+    {name.substr(0, 5)}
+  </button>
 {/each}

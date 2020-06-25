@@ -5,6 +5,7 @@
   let DATA = [["N/A"]];
   let EDIT = {};
   let EDIT_SHOW = false;
+  let EDIT_DATA = [];
   let colspan;
   let newData = [];
   let LOADED = false;
@@ -43,6 +44,11 @@
 
   function changeType(inpt) {
     const i = parseInt(inpt.id);
+    inpt.setAttribute("type", basicData.types[i]);
+  }
+
+  function changeTypeEdit(inpt) {
+    const i = parseInt(inpt.id.replace("edit-", ""));
     inpt.setAttribute("type", basicData.types[i]);
   }
 
@@ -135,8 +141,25 @@
       data: inputs
     };
 
+    EDIT_DATA = [];
+    for (var i = 0; i < inputs.length; i++) {
+      EDIT_DATA.push(inputs[i]);
+    }
+
     EDIT_SHOW = true;
     window.dialog_show(`${window.choosenTable}-edit-dialog`);
+  }
+
+  function update(d) {
+    const confirmation = confirm("Are You Sure You Want To Update This Query?");
+    if (confirmation) {
+      window.socket.emit("update query", {
+        name: window.choosenTable,
+        columnNames: basicData.columnNames,
+        default: EDIT.data,
+        data: EDIT_DATA
+      });
+    }
   }
 </script>
 
@@ -188,12 +211,12 @@
     animation: backInDown 0.5s;
   }
 
-  .header{
+  .header {
     font-size: 160%;
     font-weight: bold;
   }
 
-  .mainContent{
+  .mainContent {
     font-size: 100%;
     font-weight: bold;
   }
@@ -273,9 +296,15 @@
       open="true">
       {#each EDIT.data as e, n}
         <span>Field {EDIT.field[n]}:</span>
-        <input type="{EDIT.type[n]}}" placeholder={e} value={e} />
+        <input
+          use:changeTypeEdit
+          id="edit-{n}"
+          placeholder={e}
+          bind:value={EDIT_DATA[n]} />
         <br />
       {/each}
+      <br />
+      <button on:click={() => update(EDIT)}>Update</button>
     </Dialog>
   {/if}
 
@@ -314,6 +343,9 @@
           Next Page
         </button>
       </Box>
+    </td>
+    <td colspan="2" class="display unselectable">
+      Page: {CURRENT_PAGE}
     </td>
   </tr>
 </table>
