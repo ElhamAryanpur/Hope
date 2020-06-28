@@ -1,22 +1,22 @@
 <script>
-  import Menu from './pages/Menu.svelte'
-  import Dash from './pages/Dash.svelte'
-  import Table from './table/Table.svelte'
-  import TableView from './table/TableView.svelte'
+  import Menu from "./pages/Menu.svelte";
+  import Dash from "./pages/Dash.svelte";
+  import Table from "./table/Table.svelte";
+  import TableView from "./table/TableView.svelte";
 
-  let choosen = window.choosen
+  let choosen = window.choosen;
   if (choosen == null) {
-    choosen = 'table'
+    choosen = "table";
   }
 
   window.updateChoosen = function() {
-    choosen = window.choosen
-  }
+    choosen = window.choosen;
+  };
 
-  window.HEIGHT = window.innerHeight - 10
-  let width
-  window.addEventListener('resize', () => {
-    location.reload()
+  window.HEIGHT = window.innerHeight - 10;
+  let width;
+  window.addEventListener("resize", () => {
+    location.reload();
   });
 </script>
 
@@ -35,7 +35,7 @@
     margin-right: 30px;
     padding-top: 30px;
     padding-bottom: 30px;
-    overflow-y: scroll;
+    overflow: auto;
   }
 </style>
 
@@ -49,7 +49,9 @@
       </div>
     </td>
     <td>
-      <div id="main" style="max-height: {window.HEIGHT - 100}px;">
+      <div
+        id="main"
+        style="max-height: {window.HEIGHT - 100}px; width: {window.innerWidth - 120 - width}px;">
         {#if choosen === 'dash'}
           <Dash />
         {:else if choosen === 'table'}

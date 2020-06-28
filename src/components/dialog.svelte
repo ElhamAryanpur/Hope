@@ -72,6 +72,8 @@
     padding: 1%;
     display: block;
     animation: backInDown 0.3s;
+    max-height: 50vh;
+    overflow: auto;
   }
 
   .table {
