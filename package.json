@@ -23,7 +23,6 @@
     "dev": "rollup -c -w",
     "start": "sirv public",
     "server": "cd db && node ../Server.js",
-    "code": "bash code.sh",
     "production": "env NODE_ENV=production && cd db && pm2 start ../Server.js -i max",
     "snyk-protect": "snyk protect",
     "prepublish": "npm run snyk-protect"

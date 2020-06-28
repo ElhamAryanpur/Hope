@@ -91,6 +91,7 @@
         <select bind:value={fieldTypes[`${n}`]}>
           <option value="text">text</option>
           <option value="number">number</option>
+          <option value="date">date</option>
         </select>
         <br />
       </td>
