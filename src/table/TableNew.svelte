@@ -1,4 +1,5 @@
 <script>
+  import { encode } from "../lib/enc.svelte";
   let numberOfFields = 2;
 
   $: fieldList = (NOF => {
@@ -28,9 +29,15 @@
         }
         fieldValues = ["id", ...fieldValues];
         fieldTypes = ["INTEGER PRIMARY KEY AUTOINCREMENT", ...fieldTypes];
+
+        const encFieldValues = [];
+        for (var i = 0; i < fieldValues.length; i++) {
+          encFieldValues.push(encode(fieldValues[i]));
+        }
+
         const newData = {
           name: tableName,
-          values: fieldValues,
+          values: encFieldValues,
           types: fieldTypes
         };
 

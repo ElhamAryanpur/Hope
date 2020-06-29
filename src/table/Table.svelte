@@ -44,6 +44,8 @@
   }
 
   .down {
+    position: relative;
+    top: 10px;
     animation: fadeInDown 0.7s;
   }
 </style>

@@ -1,6 +1,7 @@
 <script>
   import Dialog from "../components/dialog.svelte";
   import Box from "../components/box.svelte";
+  import { encode } from "../lib/enc.svelte";
 
   let DATA = [["N/A"]];
   let EDIT = {};
@@ -24,9 +25,13 @@
 
   function submitData() {
     if (newData.length != 0) {
+      const encFieldValues = [];
+      for (var i = 0; i < basicData.columnNames.length; i++) {
+        encFieldValues.push(encode(basicData.columnNames[i]));
+      }
       window.socket.emit("new query", {
         table_name: window.choosenTable,
-        fields: basicData.columnNames,
+        fields: encFieldValues,
         data: newData
       });
       getQuery();
@@ -252,7 +257,21 @@
         button="Filter"
         style="width: 100%; margin: 0; border-radius: 0px; border-radius: 10px;
         height: 59px;"
-        id="{window.choosenTable}-filter" />
+        id="{window.choosenTable}-filter">
+        <table>
+          <tr>
+            <td>
+              <span>Filter By:</span>
+            </td>
+            <td>
+              <select>
+                <option value="word">Word</option>
+                <option value="date">Date</option>
+              </select>
+            </td>
+          </tr>
+        </table>
+      </Dialog>
     </td>
 
   </tr>
@@ -344,8 +363,6 @@
         </button>
       </Box>
     </td>
-    <td colspan="2" class="display unselectable">
-      Page: {CURRENT_PAGE}
-    </td>
+    <td colspan="2" class="display unselectable">Page: {CURRENT_PAGE}</td>
   </tr>
 </table>
