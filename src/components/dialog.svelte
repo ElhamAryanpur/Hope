@@ -28,6 +28,7 @@
   }
 
   import { onMount } from "svelte";
+  let LOADED = false;
 
   onMount(() => {
     const height = window.HEIGHT - 100;
@@ -41,11 +42,13 @@
   });
 
   window.dialog_show = id => {
-    document.getElementById(id).style.display = "";
+    //document.getElementById(id).style.display = "";
+    LOADED = true;
   };
 
   window.dialog_close = id => {
-    document.getElementById(id).style.display = "none";
+    //document.getElementById(id).style.display = "none";
+    LOADED = false;
   };
 </script>
 
@@ -81,26 +84,27 @@
   }
 </style>
 
-<table use:center class="dialog" {id}>
-  <table class="table">
-    <tr>
-      <td colspan="5">
-        <h2 class="unselectable">{title}</h2>
-      </td>
-      <td>
-        <button class="unselectable" on:click={() => window.dialog_close(id)}>
-          X
-        </button>
-      </td>
-    </tr>
-    <tr>
-      <td colspan="6">
-        <slot />
-      </td>
-    </tr>
+{#if LOADED === true}
+  <table use:center class="dialog" {id}>
+    <table class="table">
+      <tr>
+        <td colspan="5">
+          <h2 class="unselectable">{title}</h2>
+        </td>
+        <td>
+          <button class="unselectable" on:click={() => window.dialog_close(id)}>
+            X
+          </button>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="6">
+          <slot />
+        </td>
+      </tr>
+    </table>
   </table>
-</table>
-
+{/if}
 {#if button != false}
   <button class="box" on:click={() => window.dialog_show(id)} {style}>
     {button}

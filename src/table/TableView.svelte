@@ -1,4 +1,5 @@
 <script>
+  import { onMount } from "svelte";
   import Dialog from "../components/dialog.svelte";
   import Box from "../components/box.svelte";
   import { encode } from "../lib/enc.svelte";
@@ -11,6 +12,12 @@
   let newData = [];
   let LOADED = false;
   let CURRENT_PAGE = 1;
+  let FILTER_FIELD = 0;
+  let FILTER_VALUE;
+
+  onMount(() => {
+    LOADED = true;
+  });
 
   let basicData = { columnNames: [] };
   window.TableDB.get_clean(window.choosenTable, doc => {
@@ -55,6 +62,10 @@
   function changeTypeEdit(inpt) {
     const i = parseInt(inpt.id.replace("edit-", ""));
     inpt.setAttribute("type", basicData.types[i]);
+  }
+
+  function changeTypeFilter(inpt) {
+    inpt.setAttribute("type", basicData.types[FILTER_FIELD]);
   }
 
   function getQuery(page = 1) {
@@ -252,26 +263,38 @@
     </td>
 
     <td>
-      <Dialog
-        title="Filter The Table Data"
-        button="Filter"
-        style="width: 100%; margin: 0; border-radius: 0px; border-radius: 10px;
-        height: 59px;"
-        id="{window.choosenTable}-filter">
-        <table>
-          <tr>
-            <td>
-              <span>Filter By:</span>
-            </td>
-            <td>
-              <select>
-                <option value="word">Word</option>
-                <option value="date">Date</option>
-              </select>
-            </td>
-          </tr>
-        </table>
-      </Dialog>
+      {#if LOADED === true}
+        <Dialog
+          title="Filter The Table Data"
+          button="Filter"
+          open="true"
+          style="width: 100%; margin: 0; border-radius: 0px; border-radius:
+          10px; height: 59px;"
+          id="{window.choosenTable}-filter">
+          <table>
+            <tr>
+              <td>
+                <span>Filter By:</span>
+              </td>
+              <td>
+                <select bind:value={FILTER_FIELD}>
+                  {#each basicData.columnNames as name, n}
+                    <option value={n}>{name}</option>
+                  {/each}
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <span>Search:</span>
+              </td>
+              <td>
+                <input id="filterField" type={basicData.types[FILTER_FIELD]} />
+              </td>
+            </tr>
+          </table>
+        </Dialog>
+      {/if}
     </td>
 
   </tr>
