@@ -43,12 +43,10 @@
       });
       getQuery();
       const NewData = [];
-      console.log(newData);
       for (var i = 0; i < newData.length; i++) {
         NewData.push("");
       }
       newData = NewData;
-      console.log(NewData);
     } else {
       alert("Please Fill The Fields Before Submitting");
     }
@@ -64,10 +62,6 @@
     inpt.setAttribute("type", basicData.types[i]);
   }
 
-  function changeTypeFilter(inpt) {
-    inpt.setAttribute("type", basicData.types[FILTER_FIELD]);
-  }
-
   function getQuery(page = 1) {
     window.socket.emit("get query", {
       name: window.choosenTable,
@@ -75,18 +69,11 @@
     });
 
     window.socket.on("client get query", data => {
-      const newResult = [];
-      for (var i = 0; i < data.length; i++) {
-        var d = data[i];
-        delete d.id;
-        newResult.push(d);
-      }
-
       const finalResult = [];
-      for (var i = 0; i < newResult.length; i++) {
+      for (var i = 0; i < data.length; i++) {
         const row = [];
-        for (var key in newResult[i]) {
-          row.push(newResult[i][key]);
+        for (var key in data[i]) {
+          row.push(data[i][key]);
         }
         finalResult.push(row);
       }
@@ -177,6 +164,29 @@
       });
     }
   }
+
+  function filterData() {
+    const field = basicData.columnNames[FILTER_FIELD];
+    const value = document.getElementById("filterField").value;
+
+    window.socket.emit("filter query", {
+      table: window.choosenTable,
+      field: encode(field),
+      value: value
+    });
+
+    window.socket.on("filter query client", data => {
+      const finalResult = [];
+      for (var i = 0; i < data.length; i++) {
+        const row = [];
+        for (var key in data[i]) {
+          row.push(data[i][key]);
+        }
+        finalResult.push(row);
+      }
+      DATA = finalResult;
+    });
+  }
 </script>
 
 <style>
@@ -236,6 +246,15 @@
     font-size: 100%;
     font-weight: bold;
   }
+
+  .child {
+    width: 100%;
+    height: 100%;
+  }
+
+  fieldset {
+    border-color: #6aaac9;
+  }
 </style>
 
 <svelte:head>
@@ -274,22 +293,30 @@
           <table>
             <tr>
               <td>
-                <span>Filter By:</span>
-              </td>
-              <td>
-                <select bind:value={FILTER_FIELD}>
-                  {#each basicData.columnNames as name, n}
-                    <option value={n}>{name}</option>
-                  {/each}
-                </select>
+                <fieldset>
+                  <legend>Filter By:</legend>
+                  <select bind:value={FILTER_FIELD} class="child">
+                    {#each basicData.columnNames as name, n}
+                      <option value={n}>{name}</option>
+                    {/each}
+                  </select>
+                </fieldset>
               </td>
             </tr>
             <tr>
               <td>
-                <span>Search:</span>
+                <fieldset>
+                  <legend>Search:</legend>
+                  <input
+                    class="child"
+                    id="filterField"
+                    type={basicData.types[FILTER_FIELD]} />
+                </fieldset>
               </td>
+            </tr>
+            <tr>
               <td>
-                <input id="filterField" type={basicData.types[FILTER_FIELD]} />
+                <button on:click={() => filterData()}>Filter</button>
               </td>
             </tr>
           </table>
