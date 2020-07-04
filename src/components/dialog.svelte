@@ -27,6 +27,8 @@
     open = "false";
   }
 
+  export let onClose = ()=>{};
+
   import { onMount } from "svelte";
   let LOADED = false;
 
@@ -43,11 +45,12 @@
 
   window.dialog_show = id => {
     //document.getElementById(id).style.display = "";
-    LOADED = true;
+    LOADED = id;
   };
 
   window.dialog_close = id => {
     //document.getElementById(id).style.display = "none";
+    onClose()
     LOADED = false;
   };
 </script>
@@ -84,7 +87,7 @@
   }
 </style>
 
-{#if LOADED === true}
+{#if LOADED === id}
   <table use:center class="dialog" {id}>
     <table class="table">
       <tr>
@@ -106,7 +109,7 @@
   </table>
 {/if}
 {#if button != false}
-  <button class="box" on:click={() => window.dialog_show(id)} {style}>
+  <button class="box" on:click={() => window.dialog_show(`${id}`)} {style}>
     {button}
   </button>
 {/if}

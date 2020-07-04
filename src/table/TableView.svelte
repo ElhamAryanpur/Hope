@@ -2,8 +2,8 @@
   import { onMount } from "svelte";
   import Dialog from "../components/dialog.svelte";
   import Box from "../components/box.svelte";
-  import { encode } from "../lib/enc.svelte";
 
+  let t = 0;
   let DATA = [["N/A"]];
   let EDIT = {};
   let EDIT_SHOW = false;
@@ -12,6 +12,7 @@
   let newData = [];
   let LOADED = false;
   let CURRENT_PAGE = 1;
+  let FILTER_SHOW = false;
   let FILTER_FIELD = 0;
   let FILTER_VALUE;
 
@@ -34,7 +35,7 @@
     if (newData.length != 0) {
       const encFieldValues = [];
       for (var i = 0; i < basicData.columnNames.length; i++) {
-        encFieldValues.push(encode(basicData.columnNames[i]));
+        encFieldValues.push(basicData.columnNames[i]);
       }
       window.socket.emit("new query", {
         table_name: window.choosenTable,
@@ -171,7 +172,7 @@
 
     window.socket.emit("filter query", {
       table: window.choosenTable,
-      field: encode(field),
+      field: field,
       value: value
     });
 
@@ -186,6 +187,11 @@
       }
       DATA = finalResult;
     });
+  }
+
+  function onClose() {
+    FILTER_SHOW = false;
+    EDIT_SHOW = false;
   }
 </script>
 
@@ -283,44 +289,52 @@
 
     <td>
       {#if LOADED === true}
-        <Dialog
-          title="Filter The Table Data"
-          button="Filter"
-          open="true"
+        <button
+          on:click={() => (FILTER_SHOW = true)}
           style="width: 100%; margin: 0; border-radius: 0px; border-radius:
-          10px; height: 59px;"
-          id="{window.choosenTable}-filter">
-          <table>
-            <tr>
-              <td>
-                <fieldset>
-                  <legend>Filter By:</legend>
-                  <select bind:value={FILTER_FIELD} class="child">
-                    {#each basicData.columnNames as name, n}
-                      <option value={n}>{name}</option>
-                    {/each}
-                  </select>
-                </fieldset>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <fieldset>
-                  <legend>Search:</legend>
-                  <input
-                    class="child"
-                    id="filterField"
-                    type={basicData.types[FILTER_FIELD]} />
-                </fieldset>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <button on:click={() => filterData()}>Filter</button>
-              </td>
-            </tr>
-          </table>
-        </Dialog>
+          10px; height: 59px;">
+          Filter
+        </button>
+        {#if FILTER_SHOW === true}
+          <Dialog
+            title="Filter The Table Data"
+            open="true"
+            {onClose}
+            id="{window.choosenTable}-{t}-filter">
+
+            <table>
+              <tr>
+                <td>
+                  <fieldset>
+                    <legend>Filter By:</legend>
+                    <select bind:value={FILTER_FIELD} class="child">
+                      {#each basicData.columnNames as name, n}
+                        <option value={n}>{name}</option>
+                      {/each}
+                    </select>
+                  </fieldset>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <fieldset>
+                    <legend>Search:</legend>
+                    <input
+                      class="child"
+                      id="filterField"
+                      type={basicData.types[FILTER_FIELD]} />
+                  </fieldset>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <button on:click={() => filterData()}>Filter</button>
+                </td>
+              </tr>
+            </table>
+
+          </Dialog>
+        {/if}
       {/if}
     </td>
 
