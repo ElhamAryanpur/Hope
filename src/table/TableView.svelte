@@ -164,6 +164,8 @@
         data: EDIT_DATA
       });
     }
+    onClose();
+    getQuery();
   }
 
   function filterData() {
@@ -187,6 +189,8 @@
       }
       DATA = finalResult;
     });
+
+    onClose();
   }
 
   function onClose() {
