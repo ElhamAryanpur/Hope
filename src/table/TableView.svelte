@@ -15,13 +15,22 @@
   let FILTER_SHOW = false;
   let FILTER_FIELD = 0;
   let FILTER_VALUE;
+  let code = "";
 
   onMount(() => {
     LOADED = true;
+
+    try {
+      code = localStorage.getItem("code");
+      document.getElementById(`${window.choosenTable}-script`).innerHTML = code;
+    } catch {
+      code = "";
+      document.getElementById(`${window.choosenTable}-script`).innerHTML = code;
+    }
   });
 
   let basicData = { columnNames: [] };
-  window.TableDB.get_clean(window.choosenTable, doc => {
+  window.TableDB.get_clean(window.choosenTable, (doc) => {
     basicData.columnNames = doc.values;
     basicData.types = doc.types;
     colspan = basicData.columnNames.length;
@@ -40,7 +49,7 @@
       window.socket.emit("new query", {
         table_name: window.choosenTable,
         fields: encFieldValues,
-        data: newData
+        data: newData,
       });
       getQuery();
       const NewData = [];
@@ -66,10 +75,10 @@
   function getQuery(page = 1) {
     window.socket.emit("get query", {
       name: window.choosenTable,
-      page: page
+      page: page,
     });
 
-    window.socket.on("client get query", data => {
+    window.socket.on("client get query", (data) => {
       const finalResult = [];
       for (var i = 0; i < data.length; i++) {
         const row = [];
@@ -101,7 +110,7 @@
   function deleteTable() {
     const confirmation = confirm("Are You Sure You Want To Delete This Table?");
     if (confirmation) {
-      window.TableDB.get_clean("tableNames", doc => {
+      window.TableDB.get_clean("tableNames", (doc) => {
         const filterNames = [];
         for (var i = 0; i < doc.names.length; i++) {
           if (doc.names[i] != window.choosenTable) {
@@ -124,7 +133,7 @@
       window.socket.emit("delete query", {
         name: window.choosenTable,
         columnNames: basicData.columnNames,
-        data: rowData
+        data: rowData,
       });
       DATA.splice(rowNum, 1);
       DATA = DATA;
@@ -142,7 +151,7 @@
     EDIT = {
       field: basicData.columnNames,
       type: basicData.types,
-      data: inputs
+      data: inputs,
     };
 
     EDIT_DATA = [];
@@ -161,7 +170,7 @@
         name: window.choosenTable,
         columnNames: basicData.columnNames,
         default: EDIT.data,
-        data: EDIT_DATA
+        data: EDIT_DATA,
       });
     }
     onClose();
@@ -175,10 +184,10 @@
     window.socket.emit("filter query", {
       table: window.choosenTable,
       field: field,
-      value: value
+      value: value,
     });
 
-    window.socket.on("filter query client", data => {
+    window.socket.on("filter query client", (data) => {
       const finalResult = [];
       for (var i = 0; i < data.length; i++) {
         const row = [];
@@ -196,6 +205,11 @@
   function onClose() {
     FILTER_SHOW = false;
     EDIT_SHOW = false;
+  }
+
+  function codeSave() {
+    localStorage.setItem("code", code);
+    document.getElementById(`${window.choosenTable}-script`).innerHTML = code;
   }
 </script>
 
@@ -264,6 +278,17 @@
 
   fieldset {
     border-color: #6aaac9;
+  }
+
+  #codeDiv {
+    width: 300px;
+    height: 200px;
+  }
+
+  #codeArea {
+    height: 100%;
+    width: 100%;
+    resize: none;
   }
 </style>
 
@@ -340,6 +365,21 @@
           </Dialog>
         {/if}
       {/if}
+    </td>
+
+    <td>
+      <Dialog
+        title="Script"
+        button="</>"
+        style="width: 100%; margin: 0; border-radius: 0px; border-radius: 10px;
+        height: 59px;"
+        id="{window.choosenTable}-script">
+        <div id="codeDiv">
+          <textarea id="codeArea" bind:value={code} />
+        </div>
+        <br />
+        <button on:click={() => codeSave()}>Save</button>
+      </Dialog>
     </td>
 
   </tr>
@@ -433,4 +473,8 @@
     </td>
     <td colspan="2" class="display unselectable">Page: {CURRENT_PAGE}</td>
   </tr>
+
+  <script id="{window.choosenTable}-script">
+
+  </script>
 </table>
