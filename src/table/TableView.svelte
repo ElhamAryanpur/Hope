@@ -2,6 +2,7 @@
   import { onMount } from "svelte";
   import Dialog from "../components/dialog.svelte";
   import Box from "../components/box.svelte";
+import { text } from "svelte/internal";
 
   let t = 0;
   let DATA = [["N/A"]];
@@ -19,11 +20,10 @@
 
   onMount(() => {
     LOADED = true;
+    code = localStorage.getItem(`${window.choosenTable}-code`);
+    document.getElementById(`${window.choosenTable}-script`).innerHTML = code;
 
-    try {
-      code = localStorage.getItem("code");
-      document.getElementById(`${window.choosenTable}-script`).innerHTML = code;
-    } catch {
+    if (code == null) {
       code = "";
       document.getElementById(`${window.choosenTable}-script`).innerHTML = code;
     }
@@ -126,9 +126,55 @@
     }
   }
 
+  function smsQuery(rowNum) {
+    const rowData = DATA[rowNum];
+
+    var text = localStorage.getItem(`${window.choosenTable}-sms`);
+    if (text == null) {
+      text = "change text below for your sms message";
+      for (var i = 0; i < rowData.length; i++) {
+        text += `{${basicData.columnNames[i]}}\n`;
+      }
+    }
+
+    text = prompt("Your SMS Template", text);
+    if (text != null || text != "") {
+      localStorage.setItem(`${window.choosenTable}-sms`, text);
+
+      const confirmation = confirm("Are You Sure You Want To SMS This Row?");
+      if (confirmation) {
+        for (var i=0; i<rowData.length; i++){
+          text = text.replace(`{${basicData.columnNames[i]}}`, rowData[i]);
+        }
+        console.log(text);
+        text = encodeURI(text);
+        sendSMS(text);
+      }
+    }
+  }
+
+  function sendSMS(message){
+    var target = prompt("Send SMS To? (Phone Number) (please don't include country code)", "");
+    console.log("GOT: " + target);
+    if (target == null || target == ""){
+      console.log("null or empty")
+      sendSMS(message)
+    } else if (target != null || target != ""){
+      try {
+        target = parseInt(target);
+        console.log(target)
+        window.open(`sms:${target}&body=${message}`)
+      } catch {
+        console.log("couldn't parse")
+        console.log(target)
+        sendSMS(message)
+      }
+    }
+  }
+
   function deleteQuery(rowNum) {
     const rowData = DATA[rowNum];
-    const confirmation = confirm("Are You Sure You Want To Delete This Table?");
+    const confirmation = confirm("Are You Sure You Want To Delete This Row?");
     if (confirmation) {
       window.socket.emit("delete query", {
         name: window.choosenTable,
@@ -208,7 +254,7 @@
   }
 
   function codeSave() {
-    localStorage.setItem("code", code);
+    localStorage.setItem(`${window.choosenTable}-code`, code);
     document.getElementById(`${window.choosenTable}-script`).innerHTML = code;
   }
 </script>
@@ -452,6 +498,11 @@
           class="display unselectable right"
           src="/icon-delete.png"
           alt="Delete" />
+        <img
+          on:click={() => smsQuery(n)}
+          class="display unselectable right"
+          src="/icon-sms.png"
+          alt="SMS" />
       </td>
     </tr>
   {/each}
