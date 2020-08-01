@@ -126,52 +126,6 @@ import { text } from "svelte/internal";
     }
   }
 
-  function smsQuery(rowNum) {
-    const rowData = DATA[rowNum];
-
-    var text = localStorage.getItem(`${window.choosenTable}-sms`);
-    if (text == null) {
-      text = "change text below for your sms message";
-      for (var i = 0; i < rowData.length; i++) {
-        text += `{${basicData.columnNames[i]}}\n`;
-      }
-    }
-
-    text = prompt("Your SMS Template", text);
-    if (text != null || text != "") {
-      localStorage.setItem(`${window.choosenTable}-sms`, text);
-
-      const confirmation = confirm("Are You Sure You Want To SMS This Row?");
-      if (confirmation) {
-        for (var i=0; i<rowData.length; i++){
-          text = text.replace(`{${basicData.columnNames[i]}}`, rowData[i]);
-        }
-        console.log(text);
-        text = encodeURI(text);
-        sendSMS(text);
-      }
-    }
-  }
-
-  function sendSMS(message){
-    var target = prompt("Send SMS To? (Phone Number) (please don't include country code)", "");
-    console.log("GOT: " + target);
-    if (target == null || target == ""){
-      console.log("null or empty")
-      sendSMS(message)
-    } else if (target != null || target != ""){
-      try {
-        target = parseInt(target);
-        console.log(target)
-        window.open(`sms:${target}&body=${message}`)
-      } catch {
-        console.log("couldn't parse")
-        console.log(target)
-        sendSMS(message)
-      }
-    }
-  }
-
   function deleteQuery(rowNum) {
     const rowData = DATA[rowNum];
     const confirmation = confirm("Are You Sure You Want To Delete This Row?");
@@ -498,11 +452,6 @@ import { text } from "svelte/internal";
           class="display unselectable right"
           src="/icon-delete.png"
           alt="Delete" />
-        <img
-          on:click={() => smsQuery(n)}
-          class="display unselectable right"
-          src="/icon-sms.png"
-          alt="SMS" />
       </td>
     </tr>
   {/each}
