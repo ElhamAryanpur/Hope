@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
   import Dialog from "../components/dialog.svelte";
   import Box from "../components/box.svelte";
-import { text } from "svelte/internal";
+  import { text } from "svelte/internal";
 
   let t = 0;
   let DATA = [["N/A"]];
@@ -23,9 +23,17 @@ import { text } from "svelte/internal";
     code = localStorage.getItem(`${window.choosenTable}-code`);
     document.getElementById(`${window.choosenTable}-script`).innerHTML = code;
 
-    if (code == null) {
-      code = "";
-      document.getElementById(`${window.choosenTable}-script`).innerHTML = code;
+    if (code == null || code == "") {
+      code = ``;
+    document.getElementById(`${window.choosenTable}-script`).innerHTML = code;
+    } else {
+      const newCode = `
+      window.codes["${window.choosenTable}-function"] = ${code}`;
+      
+      //document.getElementById(`${window.choosenTable}-script`).innerHTML = newCode;
+      const script = document.createElement("script");
+      script.innerHTML = newCode;
+      document.head.appendChild(script);
     }
   });
 
@@ -34,6 +42,13 @@ import { text } from "svelte/internal";
     basicData.columnNames = doc.values;
     basicData.types = doc.types;
     colspan = basicData.columnNames.length;
+
+    if (code == ""){
+      code = `function code(data){
+        // const fields = ${JSON.stringify(basicData.columnNames)}
+}`;
+    document.getElementById(`${window.choosenTable}-script`).innerHTML = code;
+    }
   });
 
   window.socket.on("update", () => {
@@ -51,7 +66,10 @@ import { text } from "svelte/internal";
         fields: encFieldValues,
         data: newData,
       });
+
       getQuery();
+      window.codes[`${window.choosenTable}-function`](newData);
+
       const NewData = [];
       for (var i = 0; i < newData.length; i++) {
         NewData.push("");
@@ -373,7 +391,7 @@ import { text } from "svelte/internal";
         button="</>"
         style="width: 100%; margin: 0; border-radius: 0px; border-radius: 10px;
         height: 59px;"
-        id="{window.choosenTable}-script">
+        id="{window.choosenTable}-script-dialog">
         <div id="codeDiv">
           <textarea id="codeArea" bind:value={code} />
         </div>

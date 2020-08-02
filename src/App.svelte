@@ -18,6 +18,8 @@
   window.addEventListener("resize", () => {
     location.reload();
   });
+
+  window.codes = {}
 </script>
 
 <style>

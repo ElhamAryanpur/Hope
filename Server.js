@@ -26,9 +26,22 @@ app.get("/build/:name", (req, res) => {
 
 //=================== API ===================== //
 
-const db = new DB("data.db")
+const db = new DB("data.db");
 
-app.get("/apiv1/get/:table/:field/:keyword", (req, res)=>{
+function clean(result) {
+  const decoded = [];
+  for (var i = 0; i < result.length; i++) {
+    const keys = Object.keys(result[i]);
+    const row = {};
+    for (var o = 0; o < keys.length; o++) {
+      row[db.base64.urlDecode(keys[o])] = result[i][keys[o]];
+    }
+    decoded.push(row);
+  }
+  return decoded;
+}
+
+app.get("/apiv1/get/:table/:field/:keyword", (req, res) => {
   const table = req.params["table"];
   const field = req.params["field"];
   const keyword = req.params["keyword"];
@@ -36,22 +49,20 @@ app.get("/apiv1/get/:table/:field/:keyword", (req, res)=>{
   db._read_specific(
     table,
     (result) => {
-      const decoded = [];
-      for (var i=0; i<result.length; i++){
-        const keys = Object.keys(result[i]);
-        const row = {};
-        for (var o=0; o<keys.length; o++){
-          row[db.base64.urlDecode(keys[o])] = result[i][keys[o]]
-        }
-        decoded.push(row)
-      }
-      res.send(JSON.stringify(decoded));
+      res.send(JSON.stringify(clean(result)));
     },
     field,
     keyword,
     "="
   );
-})
+});
+
+app.get("/apiv1/getall/:table", (req, res) => {
+  const table = req.params["table"];
+  db._read_all(table, (result) => {
+    res.send(JSON.stringify(clean(result)));
+  });
+});
 
 //========================================================================//
 //========================================================================//
@@ -65,7 +76,9 @@ const readline = require("readline").createInterface({
   output: process.stdout,
 });
 
-readline.question("Choose a 4 digit pin (between 1000 - 9999) > ", function (port) {
+readline.question("Choose a 4 digit pin (between 1000 - 9999) > ", function (
+  port
+) {
   http.listen(port, function () {
     console.log("listening on:");
     var os = require("os");
