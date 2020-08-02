@@ -4,6 +4,7 @@ const io = require("socket.io")(http);
 const m = require("./lib/main");
 const open = require("open");
 const DB = require("./lib/db");
+const { send } = require("process");
 
 //========================================================================//
 //========================================================================//
@@ -64,54 +65,79 @@ app.get("/apiv1/getall/:table", (req, res) => {
   });
 });
 
+app.get("/apiv1/auth/:pass", (req, res) => {
+  try {
+    const pass = db.base64.urlDecode(req.params["pass"]);
+    if (pass == "Password") {
+      res.send(JSON.stringify({ auth: true }));
+    } else {
+      res.send(JSON.stringify({ auth: false }));
+    }
+  } catch {
+    res.send(JSON.stringify({ auth: false }));
+  }
+});
+
 //========================================================================//
 //========================================================================//
 
-io.on("connection", function (socket) {
-  const Main = new m(socket);
-});
-
-const readline = require("readline").createInterface({
-  input: process.stdin,
-  output: process.stdout,
-});
-
-readline.question("Choose a 4 digit pin (between 1000 - 9999) > ", function (
-  port
-) {
-  http.listen(port, function () {
-    console.log("listening on:");
-    var os = require("os");
-    var ifaces = os.networkInterfaces();
-    var choosen = false;
-    var choose = "";
-
-    Object.keys(ifaces).forEach(function (ifname) {
-      var alias = 0;
-
-      ifaces[ifname].forEach(function (iface) {
-        if ("IPv4" !== iface.family || iface.internal !== false) {
-          // skip over internal (i.e. 127.0.0.1) and non-ipv4 addresses
-          return;
-        }
-
-        if (alias >= 1) {
-          // this single interface has multiple ipv4 addresses
-          console.log(ifname + ":sss" + alias, iface.address);
-        } else {
-          // this interface has only one ipv4 adress
-          console.log(ifname, iface.address);
-        }
-        ++alias;
-
-        if (choosen == false) {
-          choose = iface.address;
-          choosen = true;
-        }
-      });
-    });
-    console.log("Port:");
-    console.log(port);
-    open(`http://${choose}:${port}`);
+var result = "false";
+try {
+  result = process.argv[2];
+} catch {
+  result = "true";
+}
+if (result.toLowerCase() == "true") {
+  io.on("connection", function (socket) {
+    const Main = new m(socket);
   });
+} else {
+  io.on("connection", function (socket) {
+    const Main = new m(socket);
+
+    socket.emit("no edit", {});
+  });
+}
+
+var port = 8080;
+try {
+  port = parseInt(process.argv[3]);
+} catch {
+  port = 8080;
+}
+http.listen(port, function () {
+  console.log("listening on:");
+  var os = require("os");
+  var ifaces = os.networkInterfaces();
+  var choosen = false;
+  var choose = "";
+
+  Object.keys(ifaces).forEach(function (ifname) {
+    var alias = 0;
+
+    ifaces[ifname].forEach(function (iface) {
+      if ("IPv4" !== iface.family || iface.internal !== false) {
+        // skip over internal (i.e. 127.0.0.1) and non-ipv4 addresses
+        return;
+      }
+
+      if (alias >= 1) {
+        // this single interface has multiple ipv4 addresses
+        console.log(ifname + ":sss" + alias, iface.address);
+      } else {
+        // this interface has only one ipv4 adress
+        console.log(ifname, iface.address);
+      }
+      ++alias;
+
+      if (choosen == false) {
+        choose = iface.address;
+        choosen = true;
+      }
+    });
+  });
+  console.log("Port:");
+  console.log(port);
+  console.log(`\n\n   -- Final Form: http://${choose}:${port} --\n\n`);
+  open(`http://${choose}:${port}`);
 });

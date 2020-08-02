@@ -25,11 +25,11 @@
 
     if (code == null || code == "") {
       code = ``;
-    document.getElementById(`${window.choosenTable}-script`).innerHTML = code;
+      document.getElementById(`${window.choosenTable}-script`).innerHTML = code;
     } else {
       const newCode = `
       window.codes["${window.choosenTable}-function"] = ${code}`;
-      
+
       //document.getElementById(`${window.choosenTable}-script`).innerHTML = newCode;
       const script = document.createElement("script");
       script.innerHTML = newCode;
@@ -43,11 +43,11 @@
     basicData.types = doc.types;
     colspan = basicData.columnNames.length;
 
-    if (code == ""){
+    if (code == "") {
       code = `function code(data){
         // const fields = ${JSON.stringify(basicData.columnNames)}
 }`;
-    document.getElementById(`${window.choosenTable}-script`).innerHTML = code;
+      document.getElementById(`${window.choosenTable}-script`).innerHTML = code;
     }
   });
 
@@ -322,103 +322,105 @@
   </tr>
   <br />
 
-  <tr class="down">
-    <td />
-    <td>
-      <Box>
-        <button
-          class="delete-button unselectable"
-          on:click={() => deleteTable()}>
-          Delete
-        </button>
-      </Box>
-    </td>
-
-    <td>
-      {#if LOADED === true}
-        <button
-          on:click={() => (FILTER_SHOW = true)}
-          style="width: 100%; margin: 0; border-radius: 0px; border-radius:
-          10px; height: 59px;">
-          Filter
-        </button>
-        {#if FILTER_SHOW === true}
-          <Dialog
-            title="Filter The Table Data"
-            open="true"
-            {onClose}
-            id="{window.choosenTable}-{t}-filter">
-
-            <table>
-              <tr>
-                <td>
-                  <fieldset>
-                    <legend>Filter By:</legend>
-                    <select bind:value={FILTER_FIELD} class="child">
-                      {#each basicData.columnNames as name, n}
-                        <option value={n}>{name}</option>
-                      {/each}
-                    </select>
-                  </fieldset>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <fieldset>
-                    <legend>Search:</legend>
-                    <input
-                      class="child"
-                      id="filterField"
-                      type={basicData.types[FILTER_FIELD]} />
-                  </fieldset>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <button on:click={() => filterData()}>Filter</button>
-                </td>
-              </tr>
-            </table>
-
-          </Dialog>
-        {/if}
-      {/if}
-    </td>
-
-    <td>
-      <Dialog
-        title="Script"
-        button="</>"
-        style="width: 100%; margin: 0; border-radius: 0px; border-radius: 10px;
-        height: 59px;"
-        id="{window.choosenTable}-script-dialog">
-        <div id="codeDiv">
-          <textarea id="codeArea" bind:value={code} />
-        </div>
-        <br />
-        <button on:click={() => codeSave()}>Save</button>
-      </Dialog>
-    </td>
-
-  </tr>
-
-  <tr class="down">
-    <td />
-    {#each basicData.columnNames as name, n}
+  {#if window.editable == true}
+    <tr class="down">
+      <td />
       <td>
-        <input
-          id={n}
-          placeholder={name}
-          bind:value={newData[`${n}`]}
-          use:changeType />
-        <br />
+        <Box>
+          <button
+            class="delete-button unselectable"
+            on:click={() => deleteTable()}>
+            Delete
+          </button>
+        </Box>
       </td>
-    {/each}
-    <td>
-      <button on:click={() => submitData()}>Submit</button>
-    </td>
-  </tr>
-  <br />
+
+      <td>
+        {#if LOADED === true}
+          <button
+            on:click={() => (FILTER_SHOW = true)}
+            style="width: 100%; margin: 0; border-radius: 0px; border-radius:
+            10px; height: 59px;">
+            Filter
+          </button>
+          {#if FILTER_SHOW === true}
+            <Dialog
+              title="Filter The Table Data"
+              open="true"
+              {onClose}
+              id="{window.choosenTable}-{t}-filter">
+
+              <table>
+                <tr>
+                  <td>
+                    <fieldset>
+                      <legend>Filter By:</legend>
+                      <select bind:value={FILTER_FIELD} class="child">
+                        {#each basicData.columnNames as name, n}
+                          <option value={n}>{name}</option>
+                        {/each}
+                      </select>
+                    </fieldset>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <fieldset>
+                      <legend>Search:</legend>
+                      <input
+                        class="child"
+                        id="filterField"
+                        type={basicData.types[FILTER_FIELD]} />
+                    </fieldset>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <button on:click={() => filterData()}>Filter</button>
+                  </td>
+                </tr>
+              </table>
+
+            </Dialog>
+          {/if}
+        {/if}
+      </td>
+
+      <td>
+        <Dialog
+          title="Script"
+          button="</>"
+          style="width: 100%; margin: 0; border-radius: 0px; border-radius:
+          10px; height: 59px;"
+          id="{window.choosenTable}-script-dialog">
+          <div id="codeDiv">
+            <textarea id="codeArea" bind:value={code} />
+          </div>
+          <br />
+          <button on:click={() => codeSave()}>Save</button>
+        </Dialog>
+      </td>
+
+    </tr>
+
+    <tr class="down">
+      <td />
+      {#each basicData.columnNames as name, n}
+        <td>
+          <input
+            id={n}
+            placeholder={name}
+            bind:value={newData[`${n}`]}
+            use:changeType />
+          <br />
+        </td>
+      {/each}
+      <td>
+        <button on:click={() => submitData()}>Submit</button>
+      </td>
+    </tr>
+    <br />
+  {/if}
   <tr class="display down">
     <td class="display unselectable">
       <span>No.</span>
@@ -428,9 +430,11 @@
         <span>{name}</span>
       </td>
     {/each}
-    <td colspan="2" class="display unselectable">
-      <span>Setting</span>
-    </td>
+    {#if window.editable == true}
+      <td colspan="2" class="display unselectable">
+        <span>Setting</span>
+      </td>
+    {/if}
   </tr>
 
   {#if EDIT_SHOW == true}
@@ -459,18 +463,20 @@
       {#each d as item, m}
         <td class="display right mainContent" id="row-{n}-field-{m}">{item}</td>
       {/each}
-      <td>
-        <img
-          on:click={() => editQuery(n)}
-          class="display unselectable right"
-          src="/icon-edit.png"
-          alt="Edit" />
-        <img
-          on:click={() => deleteQuery(n)}
-          class="display unselectable right"
-          src="/icon-delete.png"
-          alt="Delete" />
-      </td>
+      {#if window.editable == true}
+        <td>
+          <img
+            on:click={() => editQuery(n)}
+            class="display unselectable right"
+            src="/icon-edit.png"
+            alt="Edit" />
+          <img
+            on:click={() => deleteQuery(n)}
+            class="display unselectable right"
+            src="/icon-delete.png"
+            alt="Delete" />
+        </td>
+      {/if}
     </tr>
   {/each}
   <tr class="display">
@@ -489,7 +495,7 @@
         </button>
       </Box>
     </td>
-    <td colspan="2" class="display unselectable">Page: {CURRENT_PAGE}</td>
+    <td class="display unselectable">Page: {CURRENT_PAGE}</td>
   </tr>
 
   <script id="{window.choosenTable}-script">
