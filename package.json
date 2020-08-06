@@ -24,7 +24,6 @@
     "start": "sirv public",
     "server": "cd db && node ../Server.js true 8080",
     "ro-server": "cd db && node ../Server.js false 8080",
-    "production": "env NODE_ENV=production && cd db && pm2 start ../Server.js -i max",
     "snyk-protect": "snyk protect",
     "prepublish": "npm run snyk-protect"
   },
@@ -42,7 +41,6 @@
   "dependencies": {
     "express": "^4.17.1",
     "open": "^7.0.4",
-    "pm2": "^4.2.3",
     "socket.io": "^2.3.0",
     "sqlite3": "^4.1.1"
   },

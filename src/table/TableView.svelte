@@ -9,7 +9,7 @@
   let EDIT = {};
   let EDIT_SHOW = false;
   let EDIT_DATA = [];
-  let colspan;
+  let colspan = 0;
   let newData = [];
   let LOADED = false;
   let CURRENT_PAGE = 1;
@@ -17,49 +17,70 @@
   let FILTER_FIELD = 0;
   let FILTER_VALUE;
   let code = "";
+  let CODE_SHOW = false;
+  let basicData = { values: [], types: [] };
 
   onMount(() => {
-    LOADED = true;
-    code = localStorage.getItem(`${window.choosenTable}-code`);
-    document.getElementById(`${window.choosenTable}-script`).innerHTML = code;
-
-    if (code == null || code == "") {
-      code = ``;
-      document.getElementById(`${window.choosenTable}-script`).innerHTML = code;
-    } else {
-      const newCode = `
-      window.codes["${window.choosenTable}-function"] = ${code}`;
-
-      //document.getElementById(`${window.choosenTable}-script`).innerHTML = newCode;
-      const script = document.createElement("script");
-      script.innerHTML = newCode;
-      document.head.appendChild(script);
-    }
-  });
-
-  let basicData = { columnNames: [] };
-  window.TableDB.get_clean(window.choosenTable, (doc) => {
-    basicData.columnNames = doc.values;
-    basicData.types = doc.types;
-    colspan = basicData.columnNames.length;
-
-    if (code == "") {
-      code = `function code(data){
-        // const fields = ${JSON.stringify(basicData.columnNames)}
+    getScript();
+    window.TableDB.get_clean(window.choosenTable, (doc) => {
+      new Promise((success, fail) => {
+        try {
+          basicData = doc;
+          success("Data Loaded");
+        } catch {
+          fail("Couldn't load data...");
+        }
+      })
+        .then(() => {
+          const len = basicData.values.length;
+          colspan = len;
+        })
+        .then(() => {
+          if (code == "" || code == null) {
+            code = `function code(data){
+        // const fields = ${JSON.stringify(basicData.values)}
 }`;
-      document.getElementById(`${window.choosenTable}-script`).innerHTML = code;
-    }
+            document.getElementById(
+              `${window.choosenTable}-script`
+            ).innerHTML = code;
+          }
+        })
+        .then(() => {
+          LOADED = true;
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    });
   });
 
   window.socket.on("update", () => {
     getQuery();
   });
 
+  function getScript() {
+    window.TableDB.get_clean(`${window.choosenTable}-script`, (result) => {
+      if (result.code != null) {
+        const newCode = `
+      window.codes["${window.choosenTable}-function"] = ${result.code}`;
+        const script = document.createElement("script");
+        script.innerHTML = newCode;
+        document.head.appendChild(script);
+        document.getElementById(`${window.choosenTable}-script`).innerHTML =
+          result.code;
+        
+        code = result.code
+      }
+    });
+  }
+
+  // Test with TableDB, if worked, delete from main and make it final
+
   function submitData() {
     if (newData.length != 0) {
       const encFieldValues = [];
-      for (var i = 0; i < basicData.columnNames.length; i++) {
-        encFieldValues.push(basicData.columnNames[i]);
+      for (var i = 0; i < basicData.values.length; i++) {
+        encFieldValues.push(basicData.values[i]);
       }
       window.socket.emit("new query", {
         table_name: window.choosenTable,
@@ -150,7 +171,7 @@
     if (confirmation) {
       window.socket.emit("delete query", {
         name: window.choosenTable,
-        columnNames: basicData.columnNames,
+        columnNames: basicData.values,
         data: rowData,
       });
       DATA.splice(rowNum, 1);
@@ -159,7 +180,7 @@
   }
 
   function editQuery(rowNum) {
-    const noOfFields = basicData.columnNames.length;
+    const noOfFields = basicData.values.length;
     const inputs = [];
     for (var i = 0; i < noOfFields; i++) {
       inputs.push(
@@ -167,7 +188,7 @@
       );
     }
     EDIT = {
-      field: basicData.columnNames,
+      field: basicData.values,
       type: basicData.types,
       data: inputs,
     };
@@ -186,7 +207,7 @@
     if (confirmation) {
       window.socket.emit("update query", {
         name: window.choosenTable,
-        columnNames: basicData.columnNames,
+        columnNames: basicData.values,
         default: EDIT.data,
         data: EDIT_DATA,
       });
@@ -196,7 +217,7 @@
   }
 
   function filterData() {
-    const field = basicData.columnNames[FILTER_FIELD];
+    const field = basicData.values[FILTER_FIELD];
     const value = document.getElementById("filterField").value;
 
     window.socket.emit("filter query", {
@@ -223,10 +244,14 @@
   function onClose() {
     FILTER_SHOW = false;
     EDIT_SHOW = false;
+    CODE_SHOW = false;
   }
 
   function codeSave() {
-    localStorage.setItem(`${window.choosenTable}-code`, code);
+    window.TableDB.put(`${window.choosenTable}-script`, {
+      name: window.choosenTable,
+      code: code,
+    });
     document.getElementById(`${window.choosenTable}-script`).innerHTML = code;
   }
 </script>
@@ -314,191 +339,204 @@
   <title>{window.choosenTable} | Hope</title>
 </svelte:head>
 
-<table>
-  <tr>
-    <td colspan={colspan + 3}>
-      <span class="title unselectable down">{window.choosenTable}</span>
-    </td>
-  </tr>
-  <br />
-
-  {#if window.editable == true}
-    <tr class="down">
-      <td />
-      <td>
-        <Box>
-          <button
-            class="delete-button unselectable"
-            on:click={() => deleteTable()}>
-            Delete
-          </button>
-        </Box>
-      </td>
-
-      <td>
-        {#if LOADED === true}
-          <button
-            on:click={() => (FILTER_SHOW = true)}
-            style="width: 100%; margin: 0; border-radius: 0px; border-radius:
-            10px; height: 59px;">
-            Filter
-          </button>
-          {#if FILTER_SHOW === true}
-            <Dialog
-              title="Filter The Table Data"
-              open="true"
-              {onClose}
-              id="{window.choosenTable}-{t}-filter">
-
-              <table>
-                <tr>
-                  <td>
-                    <fieldset>
-                      <legend>Filter By:</legend>
-                      <select bind:value={FILTER_FIELD} class="child">
-                        {#each basicData.columnNames as name, n}
-                          <option value={n}>{name}</option>
-                        {/each}
-                      </select>
-                    </fieldset>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <fieldset>
-                      <legend>Search:</legend>
-                      <input
-                        class="child"
-                        id="filterField"
-                        type={basicData.types[FILTER_FIELD]} />
-                    </fieldset>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <button on:click={() => filterData()}>Filter</button>
-                  </td>
-                </tr>
-              </table>
-
-            </Dialog>
-          {/if}
-        {/if}
-      </td>
-
-      <td>
-        <Dialog
-          title="Script"
-          button="</>"
-          style="width: 100%; margin: 0; border-radius: 0px; border-radius:
-          10px; height: 59px;"
-          id="{window.choosenTable}-script-dialog">
-          <div id="codeDiv">
-            <textarea id="codeArea" bind:value={code} />
-          </div>
-          <br />
-          <button on:click={() => codeSave()}>Save</button>
-        </Dialog>
-      </td>
-
-    </tr>
-
-    <tr class="down">
-      <td />
-      {#each basicData.columnNames as name, n}
-        <td>
-          <input
-            id={n}
-            placeholder={name}
-            bind:value={newData[`${n}`]}
-            use:changeType />
-          <br />
+<div>
+  {#if LOADED === true}
+    <table>
+      <tr>
+        <td colspan={basicData.values.length + 3}>
+          <span class="title unselectable down">{window.choosenTable}</span>
         </td>
-      {/each}
-      <td>
-        <button on:click={() => submitData()}>Submit</button>
-      </td>
-    </tr>
-    <br />
-  {/if}
-  <tr class="display down">
-    <td class="display unselectable">
-      <span>No.</span>
-    </td>
-    {#each basicData.columnNames as name}
-      <td class="display unselectable header">
-        <span>{name}</span>
-      </td>
-    {/each}
-    {#if window.editable == true}
-      <td colspan="2" class="display unselectable">
-        <span>Setting</span>
-      </td>
-    {/if}
-  </tr>
-
-  {#if EDIT_SHOW == true}
-    <Dialog
-      id="{window.choosenTable}-edit-dialog"
-      title="EDIT DATA"
-      style=""
-      open="true">
-      {#each EDIT.data as e, n}
-        <span>Field {EDIT.field[n]}:</span>
-        <input
-          use:changeTypeEdit
-          id="edit-{n}"
-          placeholder={e}
-          bind:value={EDIT_DATA[n]} />
-        <br />
-      {/each}
+      </tr>
       <br />
-      <button on:click={() => update(EDIT)}>Update</button>
-    </Dialog>
-  {/if}
 
-  {#each DATA as d, n}
-    <tr class="display" id="row-{n}-{window.choosenTable}-table">
-      <td class="display left">{n + 1}</td>
-      {#each d as item, m}
-        <td class="display right mainContent" id="row-{n}-field-{m}">{item}</td>
-      {/each}
       {#if window.editable == true}
-        <td>
-          <img
-            on:click={() => editQuery(n)}
-            class="display unselectable right"
-            src="/icon-edit.png"
-            alt="Edit" />
-          <img
-            on:click={() => deleteQuery(n)}
-            class="display unselectable right"
-            src="/icon-delete.png"
-            alt="Delete" />
-        </td>
-      {/if}
-    </tr>
-  {/each}
-  <tr class="display">
-    <td />
-    <td>
-      <Box>
-        <button on:click={() => beforePage()} class="delete-button">
-          Previous Page
-        </button>
-      </Box>
-    </td>
-    <td>
-      <Box>
-        <button on:click={() => nextPage()} class="delete-button">
-          Next Page
-        </button>
-      </Box>
-    </td>
-    <td class="display unselectable">Page: {CURRENT_PAGE}</td>
-  </tr>
+        <tr class="down">
+          <td />
+          <td>
+            <Box>
+              <button
+                class="delete-button unselectable"
+                on:click={() => deleteTable()}>
+                Delete
+              </button>
+            </Box>
+          </td>
 
+          <td>
+
+            <button
+              on:click={() => (FILTER_SHOW = true)}
+              style="width: 100%; margin: 0; border-radius: 0px; border-radius:
+              10px; height: 59px;">
+              Filter
+            </button>
+            {#if FILTER_SHOW === true}
+              <Dialog
+                title="Filter The Table Data"
+                open="true"
+                {onClose}
+                id="{window.choosenTable}-{t}-filter">
+
+                <table>
+                  <tr>
+                    <td>
+                      <fieldset>
+                        <legend>Filter By:</legend>
+                        <select bind:value={FILTER_FIELD} class="child">
+                          {#each basicData.values as name, n}
+                            <option value={n}>{name}</option>
+                          {/each}
+                        </select>
+                      </fieldset>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <fieldset>
+                        <legend>Search:</legend>
+                        <input
+                          class="child"
+                          id="filterField"
+                          type={basicData.types[FILTER_FIELD]} />
+                      </fieldset>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <button on:click={() => filterData()}>Filter</button>
+                    </td>
+                  </tr>
+                </table>
+
+              </Dialog>
+            {/if}
+
+          </td>
+
+          <td>
+            <button
+              on:click={() => (CODE_SHOW = true)}
+              style="width: 100%; margin: 0; border-radius: 0px; border-radius:
+              10px; height: 59px;">
+              Script
+            </button>
+            {#if CODE_SHOW === true}
+              <Dialog
+                title="Script"
+                open="true"
+                {onClose}
+                id="{window.choosenTable}-script-dialog">
+                <div id="codeDiv">
+                  <textarea id="codeArea" bind:value={code} />
+                </div>
+                <br />
+                <button on:click={() => codeSave()}>Save</button>
+              </Dialog>
+            {/if}
+          </td>
+
+        </tr>
+
+        <tr class="down">
+          <td />
+          {#each basicData.values as name, n}
+            <td>
+              <input
+                id={n}
+                placeholder={name}
+                bind:value={newData[`${n}`]}
+                use:changeType />
+              <br />
+            </td>
+          {/each}
+          <td>
+            <button on:click={() => submitData()}>Submit</button>
+          </td>
+        </tr>
+        <br />
+      {/if}
+      <tr class="display down">
+        <td class="display unselectable">
+          <span>No.</span>
+        </td>
+        {#each basicData.values as name}
+          <td class="display unselectable header">
+            <span>{name}</span>
+          </td>
+        {/each}
+        {#if window.editable == true}
+          <td colspan="2" class="display unselectable">
+            <span>Setting</span>
+          </td>
+        {/if}
+      </tr>
+
+      {#if EDIT_SHOW == true}
+        <Dialog
+          id="{window.choosenTable}-edit-dialog"
+          title="EDIT DATA"
+          style=""
+          open="true">
+          {#each EDIT.data as e, n}
+            <span>Field {EDIT.field[n]}:</span>
+            <input
+              use:changeTypeEdit
+              id="edit-{n}"
+              placeholder={e}
+              bind:value={EDIT_DATA[n]} />
+            <br />
+          {/each}
+          <br />
+          <button on:click={() => update(EDIT)}>Update</button>
+        </Dialog>
+      {/if}
+
+      {#each DATA as d, n}
+        <tr class="display" id="row-{n}-{window.choosenTable}-table">
+          <td class="display left">{n + 1}</td>
+          {#each d as item, m}
+            <td class="display right mainContent" id="row-{n}-field-{m}">
+              {item}
+            </td>
+          {/each}
+          {#if window.editable == true}
+            <td>
+              <img
+                on:click={() => editQuery(n)}
+                class="display unselectable right"
+                src="/icon-edit.png"
+                alt="Edit" />
+              <img
+                on:click={() => deleteQuery(n)}
+                class="display unselectable right"
+                src="/icon-delete.png"
+                alt="Delete" />
+            </td>
+          {/if}
+        </tr>
+      {/each}
+      <tr class="display">
+        <td />
+        <td>
+          <Box>
+            <button on:click={() => beforePage()} class="delete-button">
+              Previous Page
+            </button>
+          </Box>
+        </td>
+        <td>
+          <Box>
+            <button on:click={() => nextPage()} class="delete-button">
+              Next Page
+            </button>
+          </Box>
+        </td>
+        <td class="display unselectable">Page: {CURRENT_PAGE}</td>
+      </tr>
+
+    </table>
+  {/if}
   <script id="{window.choosenTable}-script">
 
   </script>
-</table>
+</div>
