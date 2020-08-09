@@ -89,11 +89,11 @@ try {
 }
 if (result.toLowerCase() == "true") {
   io.on("connection", function (socket) {
-    const Main = new m(socket);
+    const Main = new m(socket, true);
   });
 } else {
   io.on("connection", function (socket) {
-    const Main = new m(socket);
+    const Main = new m(socket, false);
 
     socket.emit("no edit", {});
   });

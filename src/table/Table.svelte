@@ -2,8 +2,14 @@
   import Dialog from "../components/dialog.svelte";
   import Box from "../components/box.svelte";
   import TableNew from "./TableNew.svelte";
+  import { onMount } from "svelte";
 
   let TABLE_NAMES = [];
+  let Loaded = false;
+
+  onMount(() => {
+    Loaded = true;
+  });
 
   window.TableDB = new DB("tableDB");
   function getUpdates() {
@@ -54,19 +60,23 @@
   <title>Hope</title>
 </svelte:head>
 
-{#if window.editable == true}
-  <Dialog
-    id="new-table"
-    button="New Table"
-    style="padding: 7px; border-radius: 0px; height: 100px; width: 100px;
-    margin-left: 0px; animation: fadeInDown 0.7s;"
-    title="Create A New Table">
-    <TableNew />
-  </Dialog>
-{/if}
+<div>
+  {#if Loaded == true}
+    {#if window.editable == true}
+      <Dialog
+        id="new-table"
+        button="New Table"
+        style="padding: 7px; border-radius: 0px; height: 100px; width: 100px;
+        margin-left: 0px; animation: fadeInDown 0.7s;"
+        title="Create A New Table">
+        <TableNew />
+      </Dialog>
+    {/if}
 
-{#each TABLE_NAMES as name}
-  <button class="box down" title={name} on:click={() => changeTable(name)}>
-    {name.substr(0, 5)}
-  </button>
-{/each}
+    {#each TABLE_NAMES as name}
+      <button class="box down" title={name} on:click={() => changeTable(name)}>
+        {name.substr(0, 5)}
+      </button>
+    {/each}
+  {/if}
+</div>
