@@ -7,7 +7,7 @@
 
   window.TableDB = new DB("tableDB");
   function getUpdates() {
-    window.TableDB.get_clean("tableNames", data => {
+    window.TableDB.get_clean("tableNames", (data) => {
       if (data.names != null) {
         TABLE_NAMES = data.names;
       }
@@ -54,14 +54,16 @@
   <title>Hope</title>
 </svelte:head>
 
-<Dialog
-  id="new-table"
-  button="New Table"
-  style="padding: 7px; border-radius: 0px; height: 100px; width: 100px;
-  margin-left: 0px; animation: fadeInDown 0.7s;"
-  title="Create A New Table">
-  <TableNew />
-</Dialog>
+{#if window.editable == true}
+  <Dialog
+    id="new-table"
+    button="New Table"
+    style="padding: 7px; border-radius: 0px; height: 100px; width: 100px;
+    margin-left: 0px; animation: fadeInDown 0.7s;"
+    title="Create A New Table">
+    <TableNew />
+  </Dialog>
+{/if}
 
 {#each TABLE_NAMES as name}
   <button class="box down" title={name} on:click={() => changeTable(name)}>
