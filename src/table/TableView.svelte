@@ -15,7 +15,6 @@
   let CURRENT_PAGE = 1;
   let FILTER_SHOW = false;
   let FILTER_FIELD = 0;
-  let FILTER_VALUE;
   let code = "";
   let CODE_SHOW = false;
   let basicData = { values: [], types: [] };
@@ -68,8 +67,8 @@
         document.head.appendChild(script);
         document.getElementById(`${window.choosenTable}-script`).innerHTML =
           result.code;
-        
-        code = result.code
+
+        code = result.code;
       }
     });
   }
@@ -219,11 +218,12 @@
   function filterData() {
     const field = basicData.values[FILTER_FIELD];
     const value = document.getElementById("filterField").value;
+    const value2 = document.getElementById("filterField2").value;
 
     window.socket.emit("filter query", {
       table: window.choosenTable,
       field: field,
-      value: value,
+      value: [value, value2],
     });
 
     window.socket.on("filter query client", (data) => {
@@ -363,7 +363,6 @@
           </td>
 
           <td>
-
             <button
               on:click={() => (FILTER_SHOW = true)}
               style="width: 100%; margin: 0; border-radius: 0px; border-radius:
@@ -376,7 +375,6 @@
                 open="true"
                 {onClose}
                 id="{window.choosenTable}-{t}-filter">
-
                 <table>
                   <tr>
                     <td>
@@ -393,10 +391,21 @@
                   <tr>
                     <td>
                       <fieldset>
-                        <legend>Search:</legend>
+                        <legend>Start Search:</legend>
                         <input
                           class="child"
                           id="filterField"
+                          type={basicData.types[FILTER_FIELD]} />
+                      </fieldset>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <fieldset>
+                        <legend>End Search:</legend>
+                        <input
+                          class="child"
+                          id="filterField2"
                           type={basicData.types[FILTER_FIELD]} />
                       </fieldset>
                     </td>
@@ -407,10 +416,8 @@
                     </td>
                   </tr>
                 </table>
-
               </Dialog>
             {/if}
-
           </td>
 
           <td>
@@ -434,7 +441,6 @@
               </Dialog>
             {/if}
           </td>
-
         </tr>
 
         <tr class="down">
@@ -449,25 +455,17 @@
               <br />
             </td>
           {/each}
-          <td>
-            <button on:click={() => submitData()}>Submit</button>
-          </td>
+          <td><button on:click={() => submitData()}>Submit</button></td>
         </tr>
         <br />
       {/if}
       <tr class="display down">
-        <td class="display unselectable">
-          <span>No.</span>
-        </td>
+        <td class="display unselectable"><span>No.</span></td>
         {#each basicData.values as name}
-          <td class="display unselectable header">
-            <span>{name}</span>
-          </td>
+          <td class="display unselectable header"><span>{name}</span></td>
         {/each}
         {#if window.editable == true}
-          <td colspan="2" class="display unselectable">
-            <span>Setting</span>
-          </td>
+          <td colspan="2" class="display unselectable"><span>Setting</span></td>
         {/if}
       </tr>
 
@@ -533,7 +531,6 @@
         </td>
         <td class="display unselectable">Page: {CURRENT_PAGE}</td>
       </tr>
-
     </table>
   {/if}
   <script id="{window.choosenTable}-script">
