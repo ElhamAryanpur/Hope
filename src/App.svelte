@@ -3,7 +3,7 @@
   import TableView from "./table/TableView.svelte";
   import { encode } from "./lib/enc.svelte";
 
-  let pass = false;
+  let pass = true;
   let choosen = window.choosen;
 
   const auth = function () {

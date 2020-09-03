@@ -4,25 +4,27 @@ const io = require("socket.io")(http);
 const m = require("./lib/main");
 const open = require("open");
 const DB = require("./lib/db");
-const { send } = require("process");
+const path = require("path");
 
 //========================================================================//
 //========================================================================//
+
+const root = path.join(__dirname, "public");
 
 app.get("/", (req, res) => {
-  res.sendFile(__dirname + "/public/index.html");
+  res.sendFile(path.join(root, "index.html"));
 });
 
 app.get("/:name", (req, res) => {
   var name = req.params.name;
   const bundleFolder = __dirname + "/public/";
-  res.sendFile(bundleFolder + name);
+  res.sendFile(path.join(root, name));
 });
 
 app.get("/build/:name", (req, res) => {
   var name = req.params.name;
-  const bundleFolder = __dirname + "/public/build/";
-  res.sendFile(bundleFolder + name);
+  const bundleFolder = path.join(root, "bundle");
+  res.sendFile(path.join(bundleFolder, name));
 });
 
 //=================== API ===================== //
@@ -65,10 +67,20 @@ app.get("/apiv1/getall/:table", (req, res) => {
   });
 });
 
+var Password = "Password";
+try {
+  Password = process.argv[4];
+  if (Password == undefined) {
+    Password = "Password";
+  }
+} catch {
+  Password = "Password";
+}
+
 app.get("/apiv1/auth/:pass", (req, res) => {
   try {
     const pass = db.base64.urlDecode(req.params["pass"]);
-    if (pass == "Password") {
+    if (pass == Password) {
       res.send(JSON.stringify({ auth: true }));
     } else {
       res.send(JSON.stringify({ auth: false }));
@@ -84,6 +96,9 @@ app.get("/apiv1/auth/:pass", (req, res) => {
 var result = "false";
 try {
   result = process.argv[2];
+  if (result == undefined) {
+    result = "true";
+  }
 } catch {
   result = "true";
 }
@@ -101,10 +116,16 @@ if (result.toLowerCase() == "true") {
 
 var port = 8080;
 try {
-  port = parseInt(process.argv[3]);
+  port = process.argv[3];
+  if (port == undefined) {
+    port = 8080;
+  } else {
+    port = parseInt(port);
+  }
 } catch {
   port = 8080;
 }
+
 http.listen(port, function () {
   console.log("listening on:");
   var os = require("os");
@@ -136,8 +157,17 @@ http.listen(port, function () {
       }
     });
   });
+
   console.log("Port:");
   console.log(port);
-  console.log(`\n\n   -- Final Form: http://${choose}:${port} --\n\n`);
-  open(`http://${choose}:${port}`);
+  console.log("Password:");
+  console.log(Password);
+  if (typeof choose == "string" && choose.length != 0) {
+    console.log(`\n\n   -- Final Form: http://${choose}:${port} --\n\n`);
+    open(`http://${choose}:${port}`);
+  } else {
+    choose = "localhost";
+    console.log(`\n\n   -- Final Form: http://${choose}:${port} --\n\n`);
+    open(`http://${choose}:${port}`);
+  }
 });

@@ -23,26 +23,22 @@
     "dev": "rollup -c -w",
     "start": "sirv public",
     "server": "cd db && node ../Server.js true 8080",
-    "ro-server": "cd db && node ../Server.js false 8080",
-    "snyk-protect": "snyk protect",
-    "prepublish": "npm run snyk-protect"
+    "ro-server": "cd db && node ../Server.js false 8080"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^11.0.0",
-    "@rollup/plugin-node-resolve": "^7.0.0",
-    "rollup": "^1.20.0",
-    "rollup-plugin-livereload": "^1.0.0",
-    "rollup-plugin-svelte": "^5.0.3",
-    "rollup-plugin-terser": "^5.1.2",
-    "svelte": "^3.0.0",
-    "sirv-cli": "^0.4.4",
-    "snyk": "^1.316.1"
+    "@rollup/plugin-commonjs": "^15.0.0",
+    "@rollup/plugin-node-resolve": "^9.0.0",
+    "rollup": "^2.26.7",
+    "rollup-plugin-livereload": "^2.0.0",
+    "rollup-plugin-svelte": "^6.0.0",
+    "rollup-plugin-terser": "^7.0.1",
+    "sirv-cli": "^1.0.6",
+    "svelte": "^3.24.1"
   },
   "dependencies": {
     "express": "^4.17.1",
     "open": "^7.0.4",
     "socket.io": "^2.3.0",
     "sqlite3": "^4.1.1"
-  },
-  "snyk": true
+  }
 }
