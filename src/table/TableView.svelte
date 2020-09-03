@@ -254,6 +254,30 @@
     });
     document.getElementById(`${window.choosenTable}-script`).innerHTML = code;
   }
+
+  function total() {
+    const numberFileds = [];
+
+    for (var i = 0; i < basicData.types.length; i++) {
+      if (basicData.types[i] == "number") {
+        numberFileds.push(i);
+      }
+    }
+
+    for (var i = 0; i < numberFileds.length; i++) {
+      var sum = 0;
+
+      for (var o = 0; o < DATA.length; o++) {
+        sum += DATA[o][numberFileds[i]];
+      }
+
+      alert(
+        `sum of ${window.choosenTable} table, field ${
+          basicData.values[numberFileds[i]]
+        }: ${sum}`
+      );
+    }
+  }
 </script>
 
 <style>
@@ -440,6 +464,15 @@
                 <button on:click={() => codeSave()}>Save</button>
               </Dialog>
             {/if}
+          </td>
+
+          <td>
+            <!-- Print total -->
+            <button
+              style="width: 100%; margin: 0; border-radius: 0px; border-radius:
+              10px; height: 59px;"
+              on:click={() => total()}
+              title="Tells total of all numbers in this table;">Total</button>
           </td>
         </tr>
 
