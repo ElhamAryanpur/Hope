@@ -15,6 +15,7 @@
   let CURRENT_PAGE = 1;
   let FILTER_SHOW = false;
   let FILTER_FIELD = 0;
+  let FILTER_SOURCE = 0;
   let code = "";
   let CODE_SHOW = false;
   let basicData = { values: [], types: [] };
@@ -220,25 +221,60 @@
     const value = document.getElementById("filterField").value;
     const value2 = document.getElementById("filterField2").value;
 
-    window.socket.emit("filter query", {
-      table: window.choosenTable,
-      field: field,
-      value: [value, value2],
-    });
+    if (FILTER_SOURCE == "0") {
+      window.socket.emit("filter query", {
+        table: window.choosenTable,
+        field: field,
+        value: [value, value2],
+      });
 
-    window.socket.on("filter query client", (data) => {
-      const finalResult = [];
-      for (var i = 0; i < data.length; i++) {
-        const row = [];
-        for (var key in data[i]) {
-          row.push(data[i][key]);
+      window.socket.on("filter query client", (data) => {
+        const finalResult = [];
+        for (var i = 0; i < data.length; i++) {
+          const row = [];
+          for (var key in data[i]) {
+            row.push(data[i][key]);
+          }
+          finalResult.push(row);
         }
-        finalResult.push(row);
-      }
-      DATA = finalResult;
-    });
+        DATA = finalResult;
+      });
 
-    onClose();
+      onClose();
+    } else {
+      var isDate = function (date) {
+        return new Date(date) !== "Invalid Date" && !isNaN(new Date(date));
+      };
+
+      const finalResult = [];
+
+      if (isDate(value)) {
+        // Date
+      } else if (value2.length <= 0) {
+        for (var i = 0; i < DATA.length; i++) {
+          if (
+            DATA[i][FILTER_FIELD].toLowerCase().includes(value.toLowerCase())
+          ) {
+            finalResult.push(DATA[i]);
+          }
+        }
+
+        DATA = finalResult;
+        onClose();
+      } else {
+        for (var i = 0; i < DATA.length; i++) {
+          if (
+            DATA[i][FILTER_FIELD] >= value &&
+            DATA[i][FILTER_FIELD] < value2
+          ) {
+            finalResult.push(DATA[i]);
+          }
+        }
+
+        DATA = finalResult;
+        onClose();
+      }
+    }
   }
 
   function onClose() {
@@ -436,6 +472,18 @@
                   </tr>
                   <tr>
                     <td>
+                      <fieldset>
+                        <legend>Filter Source:</legend>
+                        <select bind:value={FILTER_SOURCE} class="child">
+                          <option value="0" selected>Database</option>
+                          <option value="1">Current Page</option>
+                        </select>
+                      </fieldset>
+                    </td>
+                  </tr>
+                  <br />
+                  <tr>
+                    <td>
                       <button on:click={() => filterData()}>Filter</button>
                     </td>
                   </tr>
@@ -567,6 +615,5 @@
     </table>
   {/if}
   <script id="{window.choosenTable}-script">
-
   </script>
 </div>
