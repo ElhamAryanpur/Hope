@@ -247,32 +247,35 @@
       };
 
       const finalResult = [];
+      const resultType = basicData.types[FILTER_FIELD];
 
-      if (isDate(value)) {
-        // Date
-      } else if (value2.length <= 0) {
-        for (var i = 0; i < DATA.length; i++) {
-          if (
-            DATA[i][FILTER_FIELD].toLowerCase().includes(value.toLowerCase())
-          ) {
-            finalResult.push(DATA[i]);
+      switch (resultType) {
+        case "text":
+          for (var i = 0; i < DATA.length; i++) {
+            if (
+              DATA[i][FILTER_FIELD].toLowerCase().includes(value.toLowerCase())
+            ) {
+              finalResult.push(DATA[i]);
+            }
           }
-        }
 
-        DATA = finalResult;
-        onClose();
-      } else {
-        for (var i = 0; i < DATA.length; i++) {
-          if (
-            DATA[i][FILTER_FIELD] >= value &&
-            DATA[i][FILTER_FIELD] < value2
-          ) {
-            finalResult.push(DATA[i]);
+          DATA = finalResult;
+          onClose();
+          break;
+
+        case "number":
+          for (var i = 0; i < DATA.length; i++) {
+            if (
+              parseInt(DATA[i][FILTER_FIELD]) >= parseInt(value) &&
+              parseInt(DATA[i][FILTER_FIELD]) < parseInt(value2)
+            ) {
+              finalResult.push(DATA[i]);
+            }
           }
-        }
 
-        DATA = finalResult;
-        onClose();
+          DATA = finalResult;
+          onClose();
+          break;
       }
     }
   }
